@@ -8,7 +8,7 @@ namespace Chinstrap {
     public:
         explicit InfixParslet(Precedence precedence);
 
-        std::shared_ptr<ASTNode> parse(Parser& parser, const Token& token, std::shared_ptr<ASTNode> lhs);
+        virtual std::shared_ptr<ASTNode> parse(Parser& parser, const Token& token, std::shared_ptr<ASTNode> lhs);
     };
 }
 

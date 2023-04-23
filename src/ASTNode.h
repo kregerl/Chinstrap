@@ -57,6 +57,9 @@ namespace Chinstrap {
         int64_t accept(Visitor& visitor) override;
 
     private:
+        static int64_t factorial(int64_t n);
+
+    private:
         TokenType m_type;
         std::shared_ptr<ASTNode> m_child;
     };

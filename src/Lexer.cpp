@@ -25,11 +25,12 @@ namespace Chinstrap {
             case '-': return Token::create(TokenType::Minus, advance());
             case '/': return Token::create(TokenType::Slash, advance());
             case '*': return Token::create(TokenType::Asterisk, advance());
+            case '!': return Token::create(TokenType::Exclamation, advance());
             case '(': return Token::create(TokenType::LParen, advance());
             case ')': return Token::create(TokenType::RParen, advance());
         }
 
-        return Token::create(TokenType::LexError, *m_current);
+        return Token::create(TokenType::Eof, "");
     }
 
     char Lexer::advance() {

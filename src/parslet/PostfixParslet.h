@@ -5,7 +5,10 @@
 
 namespace Chinstrap {
     class PostfixParslet : public InfixParslet {
+    public:
+        explicit PostfixParslet(Precedence precedence);
 
+        std::shared_ptr<ASTNode> parse(Parser& parser, const Token& token, std::shared_ptr<ASTNode> lhs) override;
     };
 }
 

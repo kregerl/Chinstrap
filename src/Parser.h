@@ -21,7 +21,11 @@ namespace Chinstrap {
 
         Token consume(const TokenType& type);
 
+        Token consume();
+
     private:
+
+        Token look_ahead(int distance);
 
         void next();
 
@@ -30,7 +34,8 @@ namespace Chinstrap {
     private:
 
         Lexer m_lexer;
-        Token m_current;
+        std::vector<Token> m_tokens;
+//        Token m_current;
         std::unordered_map<TokenType, PrefixParslet*> m_prefix_parslets;
         std::unordered_map<TokenType, InfixParslet*> m_infix_parslets;
     };

@@ -15,6 +15,7 @@ namespace Chinstrap {
         Minus,
         Asterisk,
         Slash,
+        Exclamation,
         Equals,
         LParen,
         RParen,

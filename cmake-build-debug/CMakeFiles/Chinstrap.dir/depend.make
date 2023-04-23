@@ -19,6 +19,7 @@ CMakeFiles/Chinstrap.dir/src/Parser.cpp.o: \
  ../src/parslet/GroupParslet.h \
  ../src/parslet/InfixParslet.h \
  ../src/parslet/Parslet.h \
+ ../src/parslet/PostfixParslet.h \
  ../src/parslet/PrefixParslet.h
 CMakeFiles/Chinstrap.dir/src/Visitor.cpp.o: \
  ../src/ASTNode.h \

@@ -45,9 +45,21 @@ namespace Chinstrap {
 
     int64_t PostfixOperationNode::accept(Visitor& visitor) {
         switch (m_type) {
-//            case TokenType::Exclamation: return
+            case TokenType::Exclamation: return factorial(m_child->accept(visitor));
+            default:break;
         }
         return 0;
+    }
+
+    int64_t PostfixOperationNode::factorial(int64_t n) {
+        int64_t factorial = 1;
+        if (n < 0) {
+            throw std::runtime_error("Cannot take the factorial of a negative number.");
+        }
+        for (int i = 1; i <= n; i++) {
+            factorial *= i;
+        }
+        return factorial;
     }
 }
 

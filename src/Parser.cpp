@@ -1,5 +1,6 @@
 #include "Parser.h"
 #include "parslet/GroupParslet.h"
+#include "parslet/PostfixParslet.h"
 
 namespace Chinstrap {
 
@@ -10,12 +11,12 @@ namespace Chinstrap {
                 {TokenType::LParen,  new GroupParslet()}
         };
         m_infix_parslets = {
-                {TokenType::Plus,     new InfixParslet(Precedence::Sum)},
-                {TokenType::Minus,    new InfixParslet(Precedence::Sum)},
-                {TokenType::Asterisk, new InfixParslet(Precedence::Product)},
-                {TokenType::Slash,    new InfixParslet(Precedence::Product)}
+                {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
+                {TokenType::Minus,       new InfixParslet(Precedence::Sum)},
+                {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
+                {TokenType::Slash,       new InfixParslet(Precedence::Product)},
+                {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)}
         };
-        next();
     }
 
     Parser::~Parser() {
@@ -29,8 +30,7 @@ namespace Chinstrap {
     }
 
     std::shared_ptr<ASTNode> Parser::parse_expression(Precedence precedence) {
-        Token token = m_current;
-        next();
+        Token token = consume();
 
         if (token.type == TokenType::LexError) {
             throw std::runtime_error("Error lexing token");
@@ -50,8 +50,7 @@ namespace Chinstrap {
 
         // Continue to parse while the precedence is lower than the next.
         while (precedence < get_precedence()) {
-            token = m_current;
-            next();
+            token = consume();
 
             auto infix = m_infix_parslets.at(token.type);
             node = infix->parse(*this, token, node);
@@ -60,9 +59,16 @@ namespace Chinstrap {
         return node;
     }
 
+    Precedence Parser::get_precedence() {
+        TokenType type = look_ahead(0).type;
+        if (m_infix_parslets.find(type) != m_infix_parslets.end()) {
+            return m_infix_parslets.at(type)->get_precedence();
+        }
+        return Precedence::None;
+    }
+
     Token Parser::consume(const TokenType& type) {
-        Token token = m_current;
-        next();
+        Token token = look_ahead(0);
         if (token.type != type) {
             std::stringstream ss;
             ss << "Expected token type '";
@@ -72,19 +78,21 @@ namespace Chinstrap {
             ss << "'";
             throw std::runtime_error(ss.str());
         }
-        return token;
+        return consume();
     }
 
-    void Parser::next() {
-        if (!m_lexer.is_end())
-            m_current = m_lexer.next();
-    }
-
-    Precedence Parser::get_precedence() {
-        if (m_infix_parslets.find(m_current.type) != m_infix_parslets.end()) {
-            return m_infix_parslets.at(m_current.type)->get_precedence();
+    Token Parser::look_ahead(int distance) {
+        while (distance >= m_tokens.size()) {
+            m_tokens.emplace_back(m_lexer.next());
         }
-        return Precedence::None;
+        return m_tokens.at(distance);
+    }
+
+    Token Parser::consume() {
+        look_ahead(0);
+        Token token = m_tokens.at(0);
+        m_tokens.pop_back();
+        return token;
     }
 
 }
