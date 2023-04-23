@@ -28,6 +28,10 @@ namespace Chinstrap {
             case '!': return Token::create(TokenType::Exclamation, advance());
             case '(': return Token::create(TokenType::LParen, advance());
             case ')': return Token::create(TokenType::RParen, advance());
+            case '<': return Token::create(TokenType::LessThan, advance());
+            case '>': return Token::create(TokenType::GreaterThan, advance());
+            case '|': return Token::create(TokenType::Pipe, advance());
+            case '&': return Token::create(TokenType::Ampersand, advance());
         }
 
         return Token::create(TokenType::Eof, "");

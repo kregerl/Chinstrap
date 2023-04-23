@@ -19,6 +19,10 @@ namespace Chinstrap {
         Equals,
         LParen,
         RParen,
+        LessThan,
+        GreaterThan,
+        Pipe,
+        Ampersand,
         Eof
     };
 
