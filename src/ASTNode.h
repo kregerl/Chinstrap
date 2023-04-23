@@ -28,13 +28,40 @@ namespace Chinstrap {
 
     class BinaryOperationNode : public ASTNode {
     public:
-        BinaryOperationNode(TokenType op_type, std::shared_ptr<ASTNode> left_child,
+        enum class Type {
+            Addition,
+            Subtraction,
+            Multiplication,
+            Division,
+            Modulus,
+            And,
+            Or,
+            ShiftLeft,
+            ShiftRight
+        };
+
+        static std::optional<Type> op_type_from_token_type(const TokenType& type) {
+            switch (type) {
+                case TokenType::Plus: return Type::Addition;
+                case TokenType::Minus:return Type::Subtraction;
+                case TokenType::Asterisk:return Type::Multiplication;
+                case TokenType::Slash:return Type::Division;
+//                case TokenType::LessThan:break;
+//                case TokenType::GreaterThan:break;
+//                case TokenType::Pipe:break;
+//                case TokenType::Ampersand:break;
+                default: return {};
+            }
+        }
+
+    public:
+        BinaryOperationNode(Type op_type, std::shared_ptr<ASTNode> left_child,
                             std::shared_ptr<ASTNode> right_child);
 
         int64_t accept(Visitor& visitor) override;
 
     private:
-        TokenType m_type;
+        Type m_type;
         std::shared_ptr<ASTNode> m_left_child;
         std::shared_ptr<ASTNode> m_right_child;
     };

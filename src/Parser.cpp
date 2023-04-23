@@ -13,6 +13,8 @@ namespace Chinstrap {
         m_infix_parslets = {
                 {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
                 {TokenType::Minus,       new InfixParslet(Precedence::Sum)},
+                {TokenType::LessThan,    new InfixParslet(Precedence::Sum)},
+                {TokenType::GreaterThan, new InfixParslet(Precedence::Sum)},
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
                 {TokenType::Slash,       new InfixParslet(Precedence::Product)},
                 {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)}
@@ -60,19 +62,28 @@ namespace Chinstrap {
     }
 
     Precedence Parser::get_precedence() {
-        TokenType type = look_ahead(0).type;
+        TokenType type = look_ahead().type;
         if (m_infix_parslets.find(type) != m_infix_parslets.end()) {
             return m_infix_parslets.at(type)->get_precedence();
         }
         return Precedence::None;
     }
 
-    Token Parser::consume(const TokenType& type) {
-        Token token = look_ahead(0);
-        if (token.type != type) {
+    bool Parser::matches(const TokenType& expected) {
+        Token token = look_ahead();
+        if (token.type != expected)
+            return false;
+
+        consume();
+        return true;
+    }
+
+    Token Parser::consume(const TokenType& expected) {
+        Token token = look_ahead();
+        if (token.type != expected) {
             std::stringstream ss;
             ss << "Expected token type '";
-            ss << (int) type;
+            ss << (int) expected;
             ss << "' but got '";
             ss << token.value;
             ss << "'";
@@ -89,7 +100,7 @@ namespace Chinstrap {
     }
 
     Token Parser::consume() {
-        look_ahead(0);
+        look_ahead();
         Token token = m_tokens.at(0);
         m_tokens.pop_back();
         return token;

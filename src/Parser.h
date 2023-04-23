@@ -19,15 +19,15 @@ namespace Chinstrap {
 
         std::shared_ptr<ASTNode> parse_expression(Precedence precedence = Precedence::None);
 
-        Token consume(const TokenType& type);
+        bool matches(const TokenType& expected);
+
+        Token consume(const TokenType& expected);
 
         Token consume();
 
     private:
 
-        Token look_ahead(int distance);
-
-        void next();
+        Token look_ahead(int distance = 0);
 
         Precedence get_precedence();
 

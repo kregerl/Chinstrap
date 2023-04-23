@@ -9,19 +9,21 @@ namespace Chinstrap {
     }
 
     BinaryOperationNode::BinaryOperationNode(
-            Chinstrap::TokenType op_type,
+            BinaryOperationNode::Type op_type,
             std::shared_ptr<ASTNode> left_child,
-            std::shared_ptr<ASTNode> right_child
-    ) : m_type(op_type),
-        m_left_child(std::move(left_child)),
-        m_right_child(std::move(right_child)) {}
+            std::shared_ptr<ASTNode> right_child)
+            : m_type(op_type),
+              m_left_child(std::move(left_child)),
+              m_right_child(std::move(right_child)) {}
 
     int64_t BinaryOperationNode::accept(Visitor& visitor) {
         switch (m_type) {
-            case TokenType::Plus:return m_left_child->accept(visitor) + m_right_child->accept(visitor);
-            case TokenType::Minus:return m_left_child->accept(visitor) - m_right_child->accept(visitor);
-            case TokenType::Asterisk:return m_left_child->accept(visitor) * m_right_child->accept(visitor);
-            case TokenType::Slash:return m_left_child->accept(visitor) / m_right_child->accept(visitor);
+            case Type::Addition: return m_left_child->accept(visitor) + m_right_child->accept(visitor);
+            case Type::Subtraction: return m_left_child->accept(visitor) - m_right_child->accept(visitor);
+            case Type::Multiplication: return m_left_child->accept(visitor) * m_right_child->accept(visitor);
+            case Type::Division: return m_left_child->accept(visitor) / m_right_child->accept(visitor);
+            case Type::ShiftLeft: return m_left_child->accept(visitor) << m_right_child->accept(visitor);
+            case Type::ShiftRight: return m_left_child->accept(visitor) >> m_right_child->accept(visitor);
             default:
                 // TODO: Throw error when token is not valid for a binary op node
                 break;
