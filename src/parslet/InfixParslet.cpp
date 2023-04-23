@@ -17,7 +17,7 @@ namespace Chinstrap {
         }
 
         // Parse rhs and for binary node with 'lhs' 'token.type' 'rhs'
-        auto rhs = parser.parse_expression();
+        auto rhs = parser.parse_expression(get_precedence());
 
         if (!type.has_value()) {
             throw std::runtime_error("Invalid token type for binary operation node");

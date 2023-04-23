@@ -12,6 +12,8 @@ namespace Chinstrap {
         virtual ~ASTNode() = default;
 
         virtual int64_t accept(Visitor& visitor) = 0;
+
+        virtual void accept_print(Visitor& visitor, int* indent_amount) = 0;
     };
 
     class IntegerNode : public ASTNode {
@@ -21,6 +23,8 @@ namespace Chinstrap {
         [[nodiscard]] uint64_t value() const { return m_value; }
 
         int64_t accept(Visitor& visitor) override;
+
+        void accept_print(Visitor& visitor, int* indent_amount) override;
 
     private:
         int64_t m_value;
@@ -60,6 +64,8 @@ namespace Chinstrap {
 
         int64_t accept(Visitor& visitor) override;
 
+        void accept_print(Visitor& visitor, int* indent_amount) override;
+
     private:
         Type m_type;
         std::shared_ptr<ASTNode> m_left_child;
@@ -68,26 +74,30 @@ namespace Chinstrap {
 
     class PrefixOperationNode : public ASTNode {
     public:
-        PrefixOperationNode(TokenType op_type, std::shared_ptr<ASTNode> child);
+        PrefixOperationNode(Token token, std::shared_ptr<ASTNode> child);
 
         int64_t accept(Visitor& visitor) override;
 
+        void accept_print(Visitor& visitor, int* indent_amount) override;
+
     private:
-        TokenType m_type;
+        Token m_token;
         std::shared_ptr<ASTNode> m_child;
     };
 
     class PostfixOperationNode : public ASTNode {
     public:
-        PostfixOperationNode(std::shared_ptr<ASTNode> child, TokenType op_type);
+        PostfixOperationNode(std::shared_ptr<ASTNode> child, Token token);
 
         int64_t accept(Visitor& visitor) override;
+
+        void accept_print(Visitor& visitor, int* indent_amount) override;
 
     private:
         static int64_t factorial(int64_t n);
 
     private:
-        TokenType m_type;
+        Token m_token;
         std::shared_ptr<ASTNode> m_child;
     };
 

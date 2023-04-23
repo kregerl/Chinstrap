@@ -12,6 +12,6 @@ namespace Chinstrap {
 
         // Otherwise, parse as unary expression
         auto operand = parser.parse_expression(get_precedence());
-        return std::make_shared<PrefixOperationNode>(token.type, operand);
+        return std::make_shared<PrefixOperationNode>(token, operand);
     }
 }

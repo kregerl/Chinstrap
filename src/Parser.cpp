@@ -13,8 +13,8 @@ namespace Chinstrap {
         m_infix_parslets = {
                 {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
                 {TokenType::Minus,       new InfixParslet(Precedence::Sum)},
-                {TokenType::LessThan,    new InfixParslet(Precedence::Sum)},
-                {TokenType::GreaterThan, new InfixParslet(Precedence::Sum)},
+                {TokenType::LessThan,    new InfixParslet(Precedence::Bitshift)},
+                {TokenType::GreaterThan, new InfixParslet(Precedence::Bitshift)},
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
                 {TokenType::Slash,       new InfixParslet(Precedence::Product)},
                 {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)}

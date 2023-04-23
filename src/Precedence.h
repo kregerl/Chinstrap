@@ -6,6 +6,7 @@ namespace Chinstrap {
         None,
         Assignment,
         Conditional,
+        Bitshift,
         Sum,
         Product,
         Exponent,
