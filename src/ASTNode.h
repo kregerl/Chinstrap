@@ -11,20 +11,29 @@ namespace Chinstrap {
     public:
         virtual ~ASTNode() = default;
 
-        virtual int64_t accept(Visitor& visitor) = 0;
+        virtual void accept(Visitor& visitor) = 0;
+    };
 
-        virtual void accept_print(Visitor& visitor, int* indent_amount) = 0;
+    class SingleChildNode : public ASTNode {
+    public:
+        [[nodiscard]] std::shared_ptr<ASTNode> child() const {
+            return m_child;
+        }
+
+    protected:
+        explicit SingleChildNode(std::shared_ptr<ASTNode> child) : m_child(std::move(child)) {}
+
+    private:
+        std::shared_ptr<ASTNode> m_child;
     };
 
     class IntegerNode : public ASTNode {
     public:
-        explicit IntegerNode(uint64_t value);
+        explicit IntegerNode(int64_t value);
 
-        [[nodiscard]] uint64_t value() const { return m_value; }
+        [[nodiscard]] int64_t value() const { return m_value; }
 
-        int64_t accept(Visitor& visitor) override;
-
-        void accept_print(Visitor& visitor, int* indent_amount) override;
+        void accept(Visitor& visitor) override;
 
     private:
         int64_t m_value;
@@ -62,9 +71,19 @@ namespace Chinstrap {
         BinaryOperationNode(Type op_type, std::shared_ptr<ASTNode> left_child,
                             std::shared_ptr<ASTNode> right_child);
 
-        int64_t accept(Visitor& visitor) override;
+        void accept(Visitor& visitor) override;
 
-        void accept_print(Visitor& visitor, int* indent_amount) override;
+        [[nodiscard]] std::shared_ptr<ASTNode> left() const {
+            return m_left_child;
+        }
+
+        [[nodiscard]] std::shared_ptr<ASTNode> right() const {
+            return m_right_child;
+        }
+
+        [[nodiscard]] Type type() const {
+            return m_type;
+        }
 
     private:
         Type m_type;
@@ -72,33 +91,34 @@ namespace Chinstrap {
         std::shared_ptr<ASTNode> m_right_child;
     };
 
-    class PrefixOperationNode : public ASTNode {
+    class PrefixOperationNode : public SingleChildNode {
     public:
         PrefixOperationNode(Token token, std::shared_ptr<ASTNode> child);
 
-        int64_t accept(Visitor& visitor) override;
+        [[nodiscard]] TokenType type() const {
+            return m_token.type;
+        }
 
-        void accept_print(Visitor& visitor, int* indent_amount) override;
+        void accept(Visitor& visitor) override;
 
     private:
         Token m_token;
-        std::shared_ptr<ASTNode> m_child;
     };
 
-    class PostfixOperationNode : public ASTNode {
+    class PostfixOperationNode : public SingleChildNode {
     public:
         PostfixOperationNode(std::shared_ptr<ASTNode> child, Token token);
 
-        int64_t accept(Visitor& visitor) override;
+        [[nodiscard]] TokenType type() const {
+            return m_token.type;
+        }
 
-        void accept_print(Visitor& visitor, int* indent_amount) override;
+        void accept(Visitor& visitor) override;
 
-    private:
         static int64_t factorial(int64_t n);
 
     private:
         Token m_token;
-        std::shared_ptr<ASTNode> m_child;
     };
 
 }

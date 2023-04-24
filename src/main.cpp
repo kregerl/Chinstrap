@@ -1,23 +1,21 @@
 #include <iostream>
+#include <utility>
 #include "Parser.h"
 
 void interpret(std::shared_ptr<Chinstrap::ASTNode> node) {
-    auto interpreter = Chinstrap::Interpreter();
-    std::cout << node->accept(interpreter) << std::endl;
+    std::cout << Chinstrap::Interpreter::get_value(std::move(node)) << std::endl;
 }
 
 void pretty_print(std::shared_ptr<Chinstrap::ASTNode> node) {
-    int indent_amount = 0;
-    auto pp = Chinstrap::PrettyPrinter();
-    node->accept_print(pp, &indent_amount);
+    Chinstrap::PrettyPrinter::get_value(std::move(node));
 }
 
 int main() {
 //    Chinstrap::Parser p("--12 + 1 - 10");
 //    Chinstrap::Parser p("(1 + (2 + 2) * 2)");
 //    Chinstrap::Parser p("1 + 1");
-//    Chinstrap::Parser p("1 + 2 * 2 << 1 + 2 * 2");
-    Chinstrap::Parser p("5!");
+    Chinstrap::Parser p("1 + 2 * 2 << 1 + 2 * 2");
+//    Chinstrap::Parser p("5!");
     auto node = p.parse_expression();
     pretty_print(node);
 }

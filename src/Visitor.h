@@ -2,8 +2,11 @@
 #define CHINSTRAP_VISITOR_H
 
 #include <cstdint>
+#include <memory>
 
 namespace Chinstrap {
+    class ASTNode;
+
     class IntegerNode;
 
     class BinaryOperationNode;
@@ -14,38 +17,49 @@ namespace Chinstrap {
 
     class Visitor {
     public:
-        virtual int64_t visit(IntegerNode&) = 0;
+        virtual void visit(IntegerNode&) = 0;
 
-        virtual int64_t visit(BinaryOperationNode&) = 0;
+        virtual void visit(BinaryOperationNode&) = 0;
 
-        virtual int64_t visit(PrefixOperationNode&) = 0;
+        virtual void visit(PrefixOperationNode&) = 0;
 
-        virtual int64_t visit(PostfixOperationNode&) = 0;
+        virtual void visit(PostfixOperationNode&) = 0;
     };
 
-    class Interpreter : public Visitor {
+    template<typename Visitor, typename Visitable, typename ResultType>
+    class ValueVisitor {
     public:
-        int64_t visit(IntegerNode&) override;
+        ValueVisitor() = default;
 
-        int64_t visit(BinaryOperationNode&) override;
+        static ResultType get_value(Visitable v);
 
-        int64_t visit(PrefixOperationNode&) override;
+        virtual void result(ResultType result);
 
-        int64_t visit(PostfixOperationNode&) override;
-
-    private:
-        int64_t m_result = 0;
+    protected:
+        ResultType m_value;
     };
 
-    class PrettyPrinter : public Visitor {
+    class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, int64_t> {
     public:
-        int64_t visit(IntegerNode&) override;
+        void visit(IntegerNode&) override;
 
-        int64_t visit(BinaryOperationNode&) override;
+        void visit(BinaryOperationNode&) override;
 
-        int64_t visit(PrefixOperationNode&) override;
+        void visit(PrefixOperationNode&) override;
 
-        int64_t visit(PostfixOperationNode&) override;
+        void visit(PostfixOperationNode&) override;
+    };
+
+    class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, int64_t> {
+    public:
+        void visit(IntegerNode&) override;
+
+        void visit(BinaryOperationNode&) override;
+
+        void visit(PrefixOperationNode&) override;
+
+        void visit(PostfixOperationNode&) override;
+
     private:
         int m_indent_amount = 0;
     };
