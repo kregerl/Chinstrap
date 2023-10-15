@@ -21,17 +21,34 @@ namespace Chinstrap {
             return lex_number();
 
         switch (*m_current) {
-            case '+': return Token::create(TokenType::Plus, advance());
-            case '-': return Token::create(TokenType::Minus, advance());
-            case '/': return Token::create(TokenType::Slash, advance());
-            case '*': return Token::create(TokenType::Asterisk, advance());
-            case '!': return Token::create(TokenType::Exclamation, advance());
-            case '(': return Token::create(TokenType::LParen, advance());
-            case ')': return Token::create(TokenType::RParen, advance());
-            case '<': return Token::create(TokenType::LessThan, advance());
-            case '>': return Token::create(TokenType::GreaterThan, advance());
-            case '|': return Token::create(TokenType::Pipe, advance());
-            case '&': return Token::create(TokenType::Ampersand, advance());
+            case ',':
+                return Token::create(TokenType::Comma, advance());
+            case '+':
+                return Token::create(TokenType::Plus, advance());
+            case '-':
+                return Token::create(TokenType::Minus, advance());
+            case '/':
+                return Token::create(TokenType::Slash, advance());
+            case '*':
+                return Token::create(TokenType::Asterisk, advance());
+            case '!':
+                return Token::create(TokenType::Exclamation, advance());
+            case '(':
+                return Token::create(TokenType::LParen, advance());
+            case ')':
+                return Token::create(TokenType::RParen, advance());
+            case '[':
+                return Token::create(TokenType::LBracket, advance());
+            case ']':
+                return Token::create(TokenType::RBracket, advance());
+            case '<':
+                return Token::create(TokenType::LessThan, advance());
+            case '>':
+                return Token::create(TokenType::GreaterThan, advance());
+            case '|':
+                return Token::create(TokenType::Pipe, advance());
+            case '&':
+                return Token::create(TokenType::Ampersand, advance());
         }
 
         return Token::create(TokenType::Eof, "");
@@ -69,7 +86,8 @@ namespace Chinstrap {
                     }
                     break;
                 }
-                default:return;
+                default:
+                    return;
             }
         }
     }
@@ -82,11 +100,7 @@ namespace Chinstrap {
                 dot_count++;
             ss << advance();
         }
-        if (dot_count > 0) {
-            return Token::create(TokenType::Real, ss.str());
-        } else {
-            return Token::create(TokenType::Integer, ss.str());
-        }
+        return Token::create(TokenType::Number, ss.str());
     }
 
     Token Lexer::lex_identifier() {
@@ -96,7 +110,7 @@ namespace Chinstrap {
         return Token::create(TokenType::Identifier, ss.str());
     }
 
-    std::string Lexer::read_source(const std::string& source_path) {
+    std::string Lexer::read_source(const std::string &source_path) {
         std::ifstream file(source_path);
         std::stringstream buffer;
         buffer << file.rdbuf();

@@ -3,9 +3,15 @@
 #include "ASTNode.h"
 
 namespace Chinstrap {
-    IntegerNode::IntegerNode(int64_t value) : m_value(value) {}
+    NumberNode::NumberNode(double value) : m_value(value) {}
 
-    void IntegerNode::accept(Visitor& visitor) {
+    void NumberNode::accept(Visitor& visitor) {
+        visitor.visit(*this);
+    }
+
+    ListNode::ListNode(std::vector<std::shared_ptr<ASTNode>> children) : m_children(std::move(children)){}
+
+    void ListNode::accept(Visitor &visitor) {
         visitor.visit(*this);
     }
 

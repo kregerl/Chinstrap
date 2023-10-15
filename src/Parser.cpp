@@ -1,14 +1,16 @@
 #include "Parser.h"
 #include "parslet/GroupParslet.h"
 #include "parslet/PostfixParslet.h"
+#include "parslet/ListParslet.h"
 
 namespace Chinstrap {
 
     Parser::Parser(std::string_view source) : m_lexer(source) {
         m_prefix_parslets = {
-                {TokenType::Integer, new PrefixParslet()},
-                {TokenType::Minus,   new PrefixParslet(Precedence::Prefix)},
-                {TokenType::LParen,  new GroupParslet()}
+                {TokenType::Number,   new PrefixParslet()},
+                {TokenType::Minus,    new PrefixParslet(Precedence::Prefix)},
+                {TokenType::LParen,   new GroupParslet()},
+                {TokenType::LBracket, new ListParslet()}
         };
         m_infix_parslets = {
                 {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
@@ -17,16 +19,16 @@ namespace Chinstrap {
                 {TokenType::GreaterThan, new InfixParslet(Precedence::Bitshift)},
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
                 {TokenType::Slash,       new InfixParslet(Precedence::Product)},
-                {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)}
+                {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)},
         };
     }
 
     Parser::~Parser() {
         // Clean up heap allocated parselets.
-        for (auto& entry: m_prefix_parslets) {
+        for (auto &entry: m_prefix_parslets) {
             delete entry.second;
         }
-        for (auto& entry: m_infix_parslets) {
+        for (auto &entry: m_infix_parslets) {
             delete entry.second;
         }
     }
@@ -69,7 +71,7 @@ namespace Chinstrap {
         return Precedence::None;
     }
 
-    bool Parser::matches(const TokenType& expected) {
+    bool Parser::matches(const TokenType &expected) {
         Token token = look_ahead();
         if (token.type != expected)
             return false;
@@ -78,7 +80,7 @@ namespace Chinstrap {
         return true;
     }
 
-    Token Parser::consume(const TokenType& expected) {
+    Token Parser::consume(const TokenType &expected) {
         Token token = look_ahead();
         if (token.type != expected) {
             std::stringstream ss;
@@ -104,6 +106,13 @@ namespace Chinstrap {
         Token token = m_tokens.at(0);
         m_tokens.pop_back();
         return token;
+    }
+
+    std::optional<Token> Parser::try_consume(const TokenType &expected) {
+        Token token = look_ahead();
+        if (token.type != expected)
+            return {};
+        return consume();
     }
 
 }

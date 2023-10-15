@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <vector>
 #include "Visitor.h"
 #include "Lexer.h"
 
@@ -27,16 +28,25 @@ namespace Chinstrap {
         std::shared_ptr<ASTNode> m_child;
     };
 
-    class IntegerNode : public ASTNode {
+    class NumberNode : public ASTNode {
     public:
-        explicit IntegerNode(int64_t value);
+        explicit NumberNode(double value);
 
-        [[nodiscard]] int64_t value() const { return m_value; }
+        [[nodiscard]] double value() const { return m_value; }
 
         void accept(Visitor& visitor) override;
 
     private:
-        int64_t m_value;
+        double m_value;
+    };
+
+    class ListNode: public ASTNode {
+    public:
+        explicit ListNode(std::vector<std::shared_ptr<ASTNode>> children);
+
+        void accept(Visitor& visitor) override;
+    private:
+        std::vector<std::shared_ptr<ASTNode>> m_children;
     };
 
     class BinaryOperationNode : public ASTNode {

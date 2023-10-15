@@ -19,9 +19,11 @@ namespace Chinstrap {
 
         std::shared_ptr<ASTNode> parse_expression(Precedence precedence = Precedence::None);
 
-        bool matches(const TokenType& expected);
+        bool matches(const TokenType &expected);
 
-        Token consume(const TokenType& expected);
+        Token consume(const TokenType &expected);
+
+        std::optional<Token> try_consume(const TokenType &expected);
 
         Token consume();
 
@@ -36,8 +38,8 @@ namespace Chinstrap {
         Lexer m_lexer;
         std::vector<Token> m_tokens;
 //        Token m_current;
-        std::unordered_map<TokenType, PrefixParslet*> m_prefix_parslets;
-        std::unordered_map<TokenType, InfixParslet*> m_infix_parslets;
+        std::unordered_map<TokenType, PrefixParslet *> m_prefix_parslets;
+        std::unordered_map<TokenType, InfixParslet *> m_infix_parslets;
     };
 }
 
