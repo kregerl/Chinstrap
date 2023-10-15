@@ -3,17 +3,11 @@
 #include "ASTNode.h"
 
 namespace Chinstrap {
-    NumberNode::NumberNode(double value) : m_value(value) {}
+    IntegerNode::IntegerNode(int64_t value) : ValueNode(value) {}
 
-    void NumberNode::accept(Visitor& visitor) {
-        visitor.visit(*this);
-    }
+    RealNode::RealNode(double value) : ValueNode(value) {}
 
     ListNode::ListNode(std::vector<std::shared_ptr<ASTNode>> children) : m_children(std::move(children)){}
-
-    void ListNode::accept(Visitor &visitor) {
-        visitor.visit(*this);
-    }
 
     BinaryOperationNode::BinaryOperationNode(
             BinaryOperationNode::Type op_type,
@@ -23,25 +17,15 @@ namespace Chinstrap {
               m_left_child(std::move(left_child)),
               m_right_child(std::move(right_child)) {}
 
-    void BinaryOperationNode::accept(Visitor& visitor) {
-        visitor.visit(*this);
-    }
 
     PrefixOperationNode::PrefixOperationNode(Token token, std::shared_ptr<ASTNode> child)
             : m_token(std::move(token)), SingleChildNode(std::move(child)) {}
 
-    void PrefixOperationNode::accept(Visitor& visitor) {
-        visitor.visit(*this);
-    }
-
     PostfixOperationNode::PostfixOperationNode(std::shared_ptr<ASTNode> child, Token token)
             : SingleChildNode(std::move(child)), m_token(std::move(token)) {}
 
-    void PostfixOperationNode::accept(Visitor& visitor) {
-        visitor.visit(*this);
-    }
-
-    int64_t PostfixOperationNode::factorial(int64_t n) {
+    IntegerLiteral PostfixOperationNode::factorial(IntegerLiteral literal) {
+        int64_t n = literal.get_value();
         int64_t factorial = 1;
         if (n < 0) {
             throw std::runtime_error("Cannot take the factorial of a negative number.");
@@ -49,7 +33,8 @@ namespace Chinstrap {
         for (int i = 1; i <= n; i++) {
             factorial *= i;
         }
-        return factorial;
+        return IntegerLiteral(factorial);
     }
+
 }
 

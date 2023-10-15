@@ -4,24 +4,21 @@
 #include <cstdint>
 #include <memory>
 #include <variant>
-#include "Literal.h"
+#include "types/Literal.h"
+#include "NodeForward.h"
+#include "types/Collection.h"
+#include "Visit.h"
+
+#define UNORDERED_VISIT(type1, type2, expression) \
+                        [](type1 &lhs, type2 &rhs) -> Returnable { return expression; },\
+                        [](type2 &lhs, type1 &rhs) -> Returnable { return expression; },
 
 namespace Chinstrap {
-    class ASTNode;
-
-    class NumberNode;
-
-    class ListNode;
-
-    class BinaryOperationNode;
-
-    class PrefixOperationNode;
-
-    class PostfixOperationNode;
-
     class Visitor {
     public:
-        virtual void visit(NumberNode &) = 0;
+        virtual void visit(IntegerNode &) = 0;
+
+        virtual void visit(RealNode &) = 0;
 
         virtual void visit(ListNode &) = 0;
 
@@ -45,18 +42,13 @@ namespace Chinstrap {
         ResultType m_value;
     };
 
-    template<class... Ts>
-    struct overload : Ts ... {
-        using Ts::operator()...;
-    };
+    using Returnable = std::variant<IntegerLiteral, RealLiteral, Collection>;
 
-    template<class... Ts> overload(Ts...) -> overload<Ts...>;
-
-    using Returnable = std::variant<NumericLiteral, StringLiteral>;
-
-    class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, int64_t> {
+    class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
-        void visit(NumberNode &) override;
+        void visit(IntegerNode &) override;
+
+        void visit(RealNode &) override;
 
         void visit(ListNode &) override;
 
@@ -67,9 +59,11 @@ namespace Chinstrap {
         void visit(PostfixOperationNode &) override;
     };
 
-    class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, int64_t> {
+    class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
-        void visit(NumberNode &) override;
+        void visit(IntegerNode &) override;
+
+        void visit(RealNode &) override;
 
         void visit(ListNode &) override;
 

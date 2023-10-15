@@ -12,7 +12,7 @@ namespace Chinstrap {
             children.emplace_back(parser.parse_expression());
         }
         parser.consume(TokenType::RBracket);
-        return PrefixParslet::parse(parser, token);
+        return std::make_shared<ListNode>(children);
     }
 }
 

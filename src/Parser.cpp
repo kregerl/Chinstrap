@@ -7,7 +7,8 @@ namespace Chinstrap {
 
     Parser::Parser(std::string_view source) : m_lexer(source) {
         m_prefix_parslets = {
-                {TokenType::Number,   new PrefixParslet()},
+                {TokenType::Integer,   new PrefixParslet()},
+                {TokenType::Real,   new PrefixParslet()},
                 {TokenType::Minus,    new PrefixParslet(Precedence::Prefix)},
                 {TokenType::LParen,   new GroupParslet()},
                 {TokenType::LBracket, new ListParslet()}
@@ -19,6 +20,7 @@ namespace Chinstrap {
                 {TokenType::GreaterThan, new InfixParslet(Precedence::Bitshift)},
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
                 {TokenType::Slash,       new InfixParslet(Precedence::Product)},
+                {TokenType::Percent,       new InfixParslet(Precedence::Product)},
                 {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)},
         };
     }

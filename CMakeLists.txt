@@ -7,5 +7,8 @@ add_executable(Chinstrap src/main.cpp src/Lexer.cpp src/Lexer.h src/Parser.cpp s
         src/Units.h
         src/parslet/ListParslet.cpp
         src/parslet/ListParslet.h
-        src/Literal.h
+        src/types/Literal.h
+        src/NodeForward.h
+        src/types/Collection.h
+        src/Visit.h
 )

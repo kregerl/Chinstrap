@@ -8,13 +8,15 @@
 namespace Chinstrap {
     enum class TokenType {
         LexError = 0,
-        Number,
+        Integer,
+        Real,
         Identifier,
         Comma,
         Plus,
         Minus,
         Asterisk,
         Slash,
+        Percent,
         Exclamation,
         Equals,
         LParen,

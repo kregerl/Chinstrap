@@ -23,8 +23,12 @@ namespace Chinstrap {
         m_value = result;
     }
 
-    void Interpreter::visit(Chinstrap::NumberNode &node) {
-        result(node.value());
+    void Interpreter::visit(IntegerNode &node) {
+        result(IntegerLiteral{node.value()});
+    }
+
+    void Interpreter::visit(RealNode &node) {
+        result(RealLiteral{node.value()});
     }
 
     void Interpreter::visit(BinaryOperationNode &node) {
@@ -32,43 +36,157 @@ namespace Chinstrap {
         auto right = get_value(node.right());
 
         switch (node.type()) {
-            case BinaryOperationNode::Type::Addition: RESULT_CASE(left + right)
-            case BinaryOperationNode::Type::Subtraction: RESULT_CASE(left - right)
-            case BinaryOperationNode::Type::Multiplication: RESULT_CASE(left * right)
-            case BinaryOperationNode::Type::Division: RESULT_CASE(left / right)
-            case BinaryOperationNode::Type::ShiftLeft: RESULT_CASE(left << right)
-            case BinaryOperationNode::Type::ShiftRight: RESULT_CASE(left >> right)
+            case BinaryOperationNode::Type::Addition: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs + rhs; },
+                        [](RealLiteral &lhs, RealLiteral &rhs) -> Returnable { return lhs + rhs; },
+                        UNORDERED_VISIT(IntegerLiteral, RealLiteral, RealLiteral(lhs.get_value() + rhs.get_value()))
+                        [](auto & , auto & )->Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::Subtraction: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs - rhs; },
+                        [](RealLiteral &lhs, RealLiteral &rhs) -> Returnable { return lhs - rhs; },
+                        UNORDERED_VISIT(IntegerLiteral, RealLiteral, RealLiteral(lhs.get_value() - rhs.get_value()))
+                        [](auto & , auto & )->Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::Multiplication: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs * rhs; },
+                        [](RealLiteral &lhs, RealLiteral &rhs) -> Returnable { return lhs * rhs; },
+                        UNORDERED_VISIT(IntegerLiteral, RealLiteral, RealLiteral(lhs.get_value() * rhs.get_value()))
+                        [](auto & , auto & )->Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::Division: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable {
+                            if (rhs.get_value() == 0)
+                                throw EvaluatorException("Division by 0");
+                            return lhs / rhs;
+                        },
+                        [](RealLiteral &lhs, RealLiteral &rhs) -> Returnable {
+                            if (rhs.get_value() == 0)
+                                throw EvaluatorException("Division by 0");
+                            return lhs / rhs;
+                        },
+                        [](IntegerLiteral &lhs, RealLiteral &rhs) -> Returnable {
+                            if (rhs.get_value() == 0)
+                                throw EvaluatorException("Division by 0");
+                            return RealLiteral(lhs.get_value() / rhs.get_value());
+                        },
+                        [](RealLiteral &lhs, IntegerLiteral &rhs) -> Returnable {
+                            if (rhs.get_value() == 0)
+                                throw EvaluatorException("Division by 0");
+                            return RealLiteral(lhs.get_value() / rhs.get_value());
+                        },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::ShiftLeft: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs << rhs; },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::ShiftRight: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs >> rhs; },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::Modulus: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs % rhs; },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::And: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs & rhs; },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
+            case BinaryOperationNode::Type::Or: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &lhs, IntegerLiteral &rhs) -> Returnable { return lhs | rhs; },
+                        [](auto &, auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, left, right))
+            }
             default:
-                // TODO: Throw error when token is not valid for a binary op node
-                break;
+                throw EvaluatorException("Unimplemented binary operation type.");
         }
     }
 
     void Interpreter::visit(PrefixOperationNode &node) {
         auto child = get_value(node.child());
         switch (node.type()) {
-            case TokenType::Minus: RESULT_CASE(-child)
+            case TokenType::Minus: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &child) -> Returnable { return child * IntegerLiteral(-1); },
+                        [](RealLiteral &child) -> Returnable { return child * RealLiteral(-1); },
+                        [](auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, child))
+            }
             default:
-                // TODO: Throw error when token is not valid for a binary op node
-                break;
+                throw EvaluatorException("Unimplemented unary operation type.");
         }
     }
 
     void Interpreter::visit(PostfixOperationNode &node) {
         auto child = get_value(node.child());
+
         switch (node.type()) {
-            case TokenType::Exclamation: RESULT_CASE(PostfixOperationNode::factorial(child))
+            case TokenType::Exclamation: {
+                RESULT_CASE(std::visit(overloaded{
+                        [](IntegerLiteral &child) -> Returnable { return PostfixOperationNode::factorial(child); },
+                        [](auto &) -> Returnable {
+                            throw EvaluatorException("Invalid operation for binary operation node.");
+                        }
+                }, child))
+            }
             default:
-                break;
+                throw EvaluatorException("Unimplemented unary operation type.");
         }
     }
 
-    void Interpreter::visit(ListNode &) {
-
+    void Interpreter::visit(ListNode &node) {
+        Collection c;
+        for (auto& child : node.children()) {
+            c.emplace_back(get_value(child));
+        }
+        result(c);
     }
 
-    void PrettyPrinter::visit(NumberNode &node) {
-        std::cout << "NumberNode: " << node.value() << std::endl;
+
+    void PrettyPrinter::visit(IntegerNode &node) {
+        std::cout << "IntegerNode: " << node.value() << std::endl;
+    }
+
+    void PrettyPrinter::visit(RealNode &node) {
+        std::cout << "RealNode: " << node.value() << std::endl;
     }
 
     void PrettyPrinter::visit(BinaryOperationNode &node) {
@@ -85,5 +203,6 @@ namespace Chinstrap {
     void PrettyPrinter::visit(ListNode &) {
 
     }
+
 }
 

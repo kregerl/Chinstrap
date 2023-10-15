@@ -7,7 +7,11 @@ namespace Chinstrap {
     std::shared_ptr<ASTNode> PrefixParslet::parse(Parser& parser, const Token& token) {
         // If precedence is still none after parens, then its assumed its a number
         if (get_precedence() == Precedence::None) {
-            return std::make_shared<NumberNode>(std::stoi(token.value));
+            if (token.type == TokenType::Integer) {
+                return std::make_shared<IntegerNode>(std::stoi(token.value));
+            } else if (token.type == TokenType::Real) {
+                return std::make_shared<RealNode>(std::stod(token.value));
+            }
         }
 
         // Otherwise, parse as unary expression

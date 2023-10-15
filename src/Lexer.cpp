@@ -29,6 +29,8 @@ namespace Chinstrap {
                 return Token::create(TokenType::Minus, advance());
             case '/':
                 return Token::create(TokenType::Slash, advance());
+            case '%':
+                return Token::create(TokenType::Percent, advance());
             case '*':
                 return Token::create(TokenType::Asterisk, advance());
             case '!':
@@ -100,7 +102,12 @@ namespace Chinstrap {
                 dot_count++;
             ss << advance();
         }
-        return Token::create(TokenType::Number, ss.str());
+        if (dot_count > 0) {
+            return Token::create(TokenType::Real, ss.str());
+        } else {
+            return Token::create(TokenType::Integer, ss.str());
+        }
+
     }
 
     Token Lexer::lex_identifier() {
