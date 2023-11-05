@@ -21,6 +21,8 @@ namespace Chinstrap {
             return lex_number();
 
         switch (*m_current) {
+            case '=':
+                return Token::create(TokenType::Equals, advance());
             case ',':
                 return Token::create(TokenType::Comma, advance());
             case '+':

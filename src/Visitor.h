@@ -39,7 +39,7 @@ namespace Chinstrap {
         ResultType m_value;
     };
 
-    using Returnable = std::variant<IntegerLiteral, RealLiteral, Collection>;
+    using Returnable = std::variant<Noop, IntegerLiteral, RealLiteral, Collection>;
 
     class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:

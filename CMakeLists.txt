@@ -31,4 +31,6 @@ add_executable(Chinstrap src/main.cpp
         src/NodeForward.h
         src/types/Collection.h
         src/Visit.h
+        src/repl/Repl.cpp
+        src/repl/Repl.h
 )

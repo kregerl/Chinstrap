@@ -192,8 +192,8 @@ namespace Chinstrap {
     }
 
     void Interpreter::visit(AssignmentNode &node) {
-        auto value = node.identifier();
-        s_variables.emplace(value, get_value(node.rhs()));
+        const auto& value = node.identifier();
+        s_variables[value] = get_value(node.rhs());
     }
 
     void PrettyPrinter::visit(IntegerNode &node) {

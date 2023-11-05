@@ -10,7 +10,9 @@ namespace Chinstrap {
 
     class Collection;
 
-    using Returnable = std::variant<IntegerLiteral, RealLiteral, Collection>;
+    class Noop {};
+
+    using Returnable = std::variant<Noop, IntegerLiteral, RealLiteral, Collection>;
 
     class Collection : public std::vector<Returnable> {
         friend std::ostream &operator<<(std::ostream &os, const Collection &c) {
