@@ -19,8 +19,9 @@ int main() {
 //    Chinstrap::Parser p("1 + 1");
 //    Chinstrap::Parser p("1 + 2 * 2 << 1 + 2 * 2");
 //    Chinstrap::Parser p("5!");
-    Chinstrap::Parser p("[1, 2, 3, 4, 5]");
+//    Chinstrap::Parser p("[1, 2, 3, 4, 5]");
 //    Chinstrap::Parser p("10 % 2");
+    Chinstrap::Parser p("x = 10");
     auto node = p.parse_expression();
 
     interpret(node);

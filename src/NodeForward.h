@@ -8,6 +8,8 @@ namespace Chinstrap {
 
     class RealNode;
 
+    class IdentifierNode;
+
     class ListNode;
 
     class BinaryOperationNode;
@@ -15,6 +17,9 @@ namespace Chinstrap {
     class PrefixOperationNode;
 
     class PostfixOperationNode;
+
+    class AssignmentNode;
 }
+
 
 #endif //CHINSTRAP_NODEFORWARD_H

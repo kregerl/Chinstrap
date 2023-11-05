@@ -8,6 +8,14 @@ namespace Chinstrap {
     InfixParslet::parse(Parser& parser, const Token& token, std::shared_ptr<ASTNode> lhs) {
         std::optional<BinaryOperationNode::Type> type = BinaryOperationNode::op_type_from_token_type(token.type);
 
+        if (token.type == TokenType::Equals && !parser.matches(TokenType::Equals)) {
+            auto identifier_node = std::dynamic_pointer_cast<IdentifierNode>(lhs);
+            if (identifier_node != nullptr) {
+                auto identifier = identifier_node->value();
+                return std::make_shared<AssignmentNode>(identifier, parser.parse_expression(get_precedence()));
+            }
+        }
+
         if (token.type == TokenType::GreaterThan && parser.matches(TokenType::GreaterThan)) {
             type = BinaryOperationNode::Type::ShiftRight;
         }

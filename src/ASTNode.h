@@ -55,6 +55,13 @@ namespace Chinstrap {
         explicit RealNode(double value);
     };
 
+    class IdentifierNode : public ValueNode<std::string> {
+        MAKE_VISITABLE
+
+    public:
+        explicit IdentifierNode(std::string value);
+    };
+
     class ListNode : public ASTNode {
         MAKE_VISITABLE
 
@@ -156,6 +163,20 @@ namespace Chinstrap {
         Token m_token;
     };
 
+    class AssignmentNode : public ASTNode {
+        MAKE_VISITABLE
+
+    public:
+        AssignmentNode(std::string identifier, std::shared_ptr<ASTNode> rhs);
+
+        [[nodiscard]] const std::string &identifier() const { return m_identifier; }
+
+        [[nodiscard]] std::shared_ptr<ASTNode> rhs() const { return m_rhs; }
+
+    private:
+        std::string m_identifier;
+        std::shared_ptr<ASTNode> m_rhs;
+    };
 }
 
 #endif //CHINSTRAP_ASTNODE_H

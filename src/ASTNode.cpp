@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <utility>
 #include "ASTNode.h"
 
 namespace Chinstrap {
@@ -7,7 +8,9 @@ namespace Chinstrap {
 
     RealNode::RealNode(double value) : ValueNode(value) {}
 
-    ListNode::ListNode(std::vector<std::shared_ptr<ASTNode>> children) : m_children(std::move(children)){}
+    IdentifierNode::IdentifierNode(std::string value) : ValueNode(std::move(value)) {}
+
+    ListNode::ListNode(std::vector<std::shared_ptr<ASTNode>> children) : m_children(std::move(children)) {}
 
     BinaryOperationNode::BinaryOperationNode(
             BinaryOperationNode::Type op_type,
@@ -36,5 +39,7 @@ namespace Chinstrap {
         return IntegerLiteral(factorial);
     }
 
+    AssignmentNode::AssignmentNode(std::string identifier, std::shared_ptr<ASTNode> rhs) :
+            m_rhs(std::move(rhs)), m_identifier(std::move(identifier)) {}
 }
 

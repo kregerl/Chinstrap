@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include <iostream>
 #include "Visitor.h"
 #include "ASTNode.h"
@@ -6,6 +7,8 @@
 #define RESULT_CASE(x) {result(x); break;}
 
 namespace Chinstrap {
+
+    static std::unordered_map<std::string, Returnable> s_variables = {};
 
     template<typename Visitor, typename Visitable, typename ResultType>
     ResultType ValueVisitor<Visitor, Visitable, ResultType>::get_value(Visitable v) {
@@ -29,6 +32,14 @@ namespace Chinstrap {
 
     void Interpreter::visit(RealNode &node) {
         result(RealLiteral{node.value()});
+    }
+
+    void Interpreter::visit(IdentifierNode &node) {
+        auto value = node.value();
+        if (s_variables.find(value) == s_variables.end()) {
+            throw EvaluatorException("Use of undeclared identifier.");
+        }
+        result(s_variables.at(value));
     }
 
     void Interpreter::visit(BinaryOperationNode &node) {
@@ -180,6 +191,10 @@ namespace Chinstrap {
         result(c);
     }
 
+    void Interpreter::visit(AssignmentNode &node) {
+        auto value = node.identifier();
+        s_variables.emplace(value, get_value(node.rhs()));
+    }
 
     void PrettyPrinter::visit(IntegerNode &node) {
         std::cout << "IntegerNode: " << node.value() << std::endl;
@@ -201,6 +216,14 @@ namespace Chinstrap {
     }
 
     void PrettyPrinter::visit(ListNode &) {
+
+    }
+
+    void PrettyPrinter::visit(IdentifierNode &) {
+
+    }
+
+    void PrettyPrinter::visit(AssignmentNode &) {
 
     }
 

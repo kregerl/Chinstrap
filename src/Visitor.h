@@ -17,16 +17,13 @@ namespace Chinstrap {
     class Visitor {
     public:
         virtual void visit(IntegerNode &) = 0;
-
         virtual void visit(RealNode &) = 0;
-
         virtual void visit(ListNode &) = 0;
-
+        virtual void visit(IdentifierNode &) = 0;
         virtual void visit(BinaryOperationNode &) = 0;
-
         virtual void visit(PrefixOperationNode &) = 0;
-
         virtual void visit(PostfixOperationNode &) = 0;
+        virtual void visit(AssignmentNode &) = 0;
     };
 
     template<typename Visitor, typename Visitable, typename ResultType>
@@ -47,32 +44,25 @@ namespace Chinstrap {
     class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
         void visit(IntegerNode &) override;
-
         void visit(RealNode &) override;
-
         void visit(ListNode &) override;
-
+        void visit(IdentifierNode &) override;
         void visit(BinaryOperationNode &) override;
-
         void visit(PrefixOperationNode &) override;
-
         void visit(PostfixOperationNode &) override;
+        void visit(AssignmentNode &) override;
     };
 
     class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
         void visit(IntegerNode &) override;
-
         void visit(RealNode &) override;
-
+        void visit(IdentifierNode &) override;
         void visit(ListNode &) override;
-
         void visit(BinaryOperationNode &) override;
-
         void visit(PrefixOperationNode &) override;
-
         void visit(PostfixOperationNode &) override;
-
+        void visit(AssignmentNode &) override;
     private:
         int m_indent_amount = 0;
     };
