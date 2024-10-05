@@ -23,11 +23,14 @@ namespace Chinstrap {
         RParen,
         LBracket,
         RBracket,
+        LBrace,
+        RBrace,
         LessThan,
         GreaterThan,
         Pipe,
         Ampersand,
-        Eof
+        Eof,
+        KW_if,
     };
 
     struct Token {

@@ -41,6 +41,23 @@ namespace Chinstrap {
         T m_value;
     };
 
+    class BraceNode: public ValueNode<std::vector<std::shared_ptr<ASTNode>>> {
+        MAKE_VISITABLE
+
+    public: 
+        explicit BraceNode(const std::vector<std::shared_ptr<ASTNode>>& value);
+    };
+
+    class FunctionNode : public ASTNode {
+        MAKE_VISITABLE
+    public:
+        FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>>& value);
+
+    private:
+        std::vector<std::shared_ptr<ASTNode>> m_parameters;
+        std::string m_name;
+    };
+
     class IntegerNode : public ValueNode<int64_t> {
         MAKE_VISITABLE
 

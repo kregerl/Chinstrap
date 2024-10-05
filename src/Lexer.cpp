@@ -45,6 +45,10 @@ namespace Chinstrap {
                 return Token::create(TokenType::LBracket, advance());
             case ']':
                 return Token::create(TokenType::RBracket, advance());
+            case '{':
+                return Token::create(TokenType::LBrace, advance());
+            case '}':
+                return Token::create(TokenType::RBrace, advance());
             case '<':
                 return Token::create(TokenType::LessThan, advance());
             case '>':
@@ -116,6 +120,12 @@ namespace Chinstrap {
         std::stringstream ss;
         while (!is_end() && std::isalnum(*m_current))
             ss << advance();
+
+        auto string = ss.str();
+
+        if (string == "if") {
+            return Token::create(TokenType::KW_if, string);
+        }
         return Token::create(TokenType::Identifier, ss.str());
     }
 

@@ -4,6 +4,11 @@
 #include "ASTNode.h"
 
 namespace Chinstrap {
+    FunctionNode::FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>>& parameters) 
+    : m_name(std::move(name)), m_parameters(parameters) {}
+
+    BraceNode::BraceNode(const std::vector<std::shared_ptr<ASTNode>>& value): ValueNode(value) {}
+
     IntegerNode::IntegerNode(int64_t value) : ValueNode(value) {}
 
     RealNode::RealNode(double value) : ValueNode(value) {}

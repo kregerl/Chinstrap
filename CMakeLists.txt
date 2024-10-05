@@ -23,6 +23,10 @@ add_executable(Chinstrap src/main.cpp
         src/parslet/GroupParslet.h
         src/parslet/PostfixParslet.cpp
         src/parslet/PostfixParslet.h
+        src/parslet/BraceParslet.h
+        src/parslet/BraceParslet.cpp
+        src/parslet/StatementParslet.h
+        src/parslet/StatementParslet.cpp
         src/Exception.h
         src/Units.h
         src/parslet/ListParslet.cpp
@@ -31,6 +35,9 @@ add_executable(Chinstrap src/main.cpp
         src/NodeForward.h
         src/types/Collection.h
         src/Visit.h
-        src/repl/Repl.cpp
-        src/repl/Repl.h
+        src/repl/Cli.cpp
+        src/repl/Cli.h
+        src/function/Function.h
+        src/function/PrintFunction.h
+        src/function/PrintFunction.cpp
 )

@@ -1,4 +1,5 @@
 #include <unordered_map>
+#include <stack>
 #include <iostream>
 #include "Visitor.h"
 #include "ASTNode.h"
@@ -8,7 +9,13 @@
 
 namespace Chinstrap {
 
-    static std::unordered_map<std::string, Returnable> s_variables = {};
+    static std::stack<Scope> make_scope_stack() {
+        std::stack<Scope> stack;
+        stack.push(Scope());
+        return stack;
+    }
+
+    static std::stack<Scope> s_scopes = make_scope_stack();
 
     template<typename Visitor, typename Visitable, typename ResultType>
     ResultType ValueVisitor<Visitor, Visitable, ResultType>::get_value(Visitable v) {
@@ -26,6 +33,23 @@ namespace Chinstrap {
         m_value = result;
     }
 
+    void Interpreter::visit(FunctionNode &node) {
+
+    }
+
+    void Interpreter::visit(BraceNode &node) {
+        s_scopes.push(Scope());
+        auto expressions = node.value();
+        for (auto &expression : expressions) {
+            auto x = get_value(expression);
+            auto y = x;
+            // Create a stack of scopes to hold vars and functions
+        }
+
+        s_scopes.pop();
+        result(Noop());
+    }
+
     void Interpreter::visit(IntegerNode &node) {
         result(IntegerLiteral{node.value()});
     }
@@ -36,10 +60,12 @@ namespace Chinstrap {
 
     void Interpreter::visit(IdentifierNode &node) {
         auto value = node.value();
-        if (s_variables.find(value) == s_variables.end()) {
+        auto &scope = s_scopes.top();
+
+        if (scope.m_variables.find(value) == scope.m_variables.end()) {
             throw EvaluatorException("Use of undeclared identifier.");
         }
-        result(s_variables.at(value));
+        result(scope.m_variables.at(value));
     }
 
     void Interpreter::visit(BinaryOperationNode &node) {
@@ -193,7 +219,15 @@ namespace Chinstrap {
 
     void Interpreter::visit(AssignmentNode &node) {
         const auto& value = node.identifier();
-        s_variables[value] = get_value(node.rhs());
+        auto &scope = s_scopes.top();
+        scope.m_variables[value] = get_value(node.rhs());
+    }
+
+    void PrettyPrinter::visit(FunctionNode &node) {
+    }
+
+    void PrettyPrinter::visit(BraceNode &node) {
+        std::cout << "Brace Node" << std::endl;
     }
 
     void PrettyPrinter::visit(IntegerNode &node) {

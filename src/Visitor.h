@@ -4,10 +4,14 @@
 #include <cstdint>
 #include <memory>
 #include <variant>
+#include <string>
+#include <unordered_map>
 #include "types/Literal.h"
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"
+#include "function/Function.h"
+#include "Returnable.h"
 
 #define UNORDERED_VISIT(type1, type2, expression) \
                         [](type1 &lhs, type2 &rhs) -> Returnable { return expression; },\
@@ -16,6 +20,8 @@
 namespace Chinstrap {
     class Visitor {
     public:
+        virtual void visit(BraceNode &) = 0;
+        virtual void visit(FunctionNode &) = 0;
         virtual void visit(IntegerNode &) = 0;
         virtual void visit(RealNode &) = 0;
         virtual void visit(ListNode &) = 0;
@@ -26,6 +32,7 @@ namespace Chinstrap {
         virtual void visit(AssignmentNode &) = 0;
     };
 
+  
     template<typename Visitor, typename Visitable, typename ResultType>
     class ValueVisitor {
     public:
@@ -39,10 +46,18 @@ namespace Chinstrap {
         ResultType m_value;
     };
 
-    using Returnable = std::variant<Noop, IntegerLiteral, RealLiteral, Collection>;
+    struct Scope {
+        std::unordered_map<std::string, Returnable> m_variables; 
+        std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
+
+        Scope(): m_variables({}) {}
+    };
+
 
     class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
+        void visit(BraceNode &) override;
+        void visit(FunctionNode &) override;
         void visit(IntegerNode &) override;
         void visit(RealNode &) override;
         void visit(ListNode &) override;
@@ -55,6 +70,8 @@ namespace Chinstrap {
 
     class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
+        void visit(BraceNode &) override;
+        void visit(FunctionNode &) override;
         void visit(IntegerNode &) override;
         void visit(RealNode &) override;
         void visit(IdentifierNode &) override;

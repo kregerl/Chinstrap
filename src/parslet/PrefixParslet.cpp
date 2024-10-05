@@ -12,8 +12,16 @@ namespace Chinstrap {
                     return std::make_shared<IntegerNode>(std::stoi(token.value));
                 case TokenType::Real:
                     return std::make_shared<RealNode>(std::stod(token.value));
-                case TokenType::Identifier:
-                    return std::make_shared<IdentifierNode>(token.value);
+                case TokenType::Identifier: {
+                    if (!parser.matches(TokenType::LParen)) {
+                        return std::make_shared<IdentifierNode>(token.value);
+                    }
+                    auto parameters = std::vector<std::shared_ptr<ASTNode>>();
+                    while (!parser.try_consume(TokenType::RParen).has_value()) {
+                        parameters.emplace_back(parser.parse_expression());
+                    }
+                    return std::make_shared<FunctionNode>(token.value, parameters);
+                }
                 default: break;
             }
         }

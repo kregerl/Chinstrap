@@ -4,6 +4,10 @@
 namespace Chinstrap {
     class ASTNode;
 
+    class FunctionNode;
+
+    class BraceNode;
+
     class IntegerNode;
 
     class RealNode;
