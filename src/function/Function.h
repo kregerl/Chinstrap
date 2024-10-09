@@ -11,7 +11,7 @@ namespace Chinstrap {
     public:
         virtual ~Function() = default;
 
-        Function(const std::unordered_map<std::string, TokenType> parameters);
+        explicit Function(const std::unordered_map<std::string, TokenType> parameters);
 
         virtual Returnable call(const std::unordered_map<std::string, Returnable> parameters) = 0;
     };

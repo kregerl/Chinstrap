@@ -3,7 +3,6 @@
 
 #include <string_view>
 #include <unordered_map>
-#include <functional>
 #include "Lexer.h"
 #include "ASTNode.h"
 #include "parslet/PrefixParslet.h"
@@ -33,11 +32,8 @@ namespace Chinstrap {
 
         Precedence get_precedence();
 
-    private:
-
         Lexer m_lexer;
         std::vector<Token> m_tokens;
-//        Token m_current;
         std::unordered_map<TokenType, PrefixParslet *> m_prefix_parslets;
         std::unordered_map<TokenType, InfixParslet *> m_infix_parslets;
     };

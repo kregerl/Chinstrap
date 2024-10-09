@@ -9,13 +9,13 @@
 #define RESULT_CASE(x) {result(x); break;}
 
 namespace Chinstrap {
-    static std::stack<Scope> make_scope_stack() {
-        std::stack<Scope> stack;
-        stack.push(Scope());
-        return stack;
+    static std::deque<Scope> make_scope_deque() {
+        std::deque<Scope> deque;
+        deque.emplace_front();
+        return deque;
     }
 
-    static std::stack<Scope> s_scopes = make_scope_stack();
+    static std::deque<Scope> s_scopes = make_scope_deque();
 
     template<typename Visitor, typename Visitable, typename ResultType>
     ResultType ValueVisitor<Visitor, Visitable, ResultType>::get_value(Visitable v) {
@@ -44,7 +44,7 @@ namespace Chinstrap {
     }
 
     void Interpreter::visit(BraceNode &node) {
-        s_scopes.push(Scope());
+        s_scopes.emplace_front();
         auto expressions = node.value();
         for (auto &expression: expressions) {
             auto x = get_value(expression);
@@ -52,7 +52,7 @@ namespace Chinstrap {
             // Create a stack of scopes to hold vars and functions
         }
 
-        s_scopes.pop();
+        s_scopes.pop_front();
         result(Noop());
     }
 
@@ -64,14 +64,25 @@ namespace Chinstrap {
         result(RealLiteral{node.value()});
     }
 
-    void Interpreter::visit(IdentifierNode &node) {
-        auto value = node.value();
-        auto &scope = s_scopes.top();
-
-        if (scope.m_variables.find(value) == scope.m_variables.end()) {
-            throw EvaluatorException("Use of undeclared identifier.");
+    static Returnable get_first_variable_in_scope(const std::string& identifier) {
+        for (auto it = s_scopes.crbegin(); it != s_scopes.crend(); ++it) {
+            if (it->m_variables.find(identifier) == it->m_variables.end()) {
+                continue;
+            }
+            return it->m_variables.at(identifier);
         }
-        result(scope.m_variables.at(value));
+        throw EvaluatorException("Use of undeclared identifier.");
+    }
+
+    void Interpreter::visit(IdentifierNode &node) {
+        auto identifier = node.value();
+        result(get_first_variable_in_scope(identifier));
+        // auto &scope = s_scopes.front();
+        //
+        // if (scope.m_variables.find(identifier) == scope.m_variables.end()) {
+        //     throw EvaluatorException("Use of undeclared identifier.");
+        // }
+        // result(scope.m_variables.at(identifier));
     }
 
     void Interpreter::visit(BinaryOperationNode &node) {
@@ -225,7 +236,7 @@ namespace Chinstrap {
 
     void Interpreter::visit(AssignmentNode &node) {
         const auto &value = node.identifier();
-        auto &scope = s_scopes.top();
+        auto &scope = s_scopes.front();
         scope.m_variables[value] = get_value(node.rhs());
     }
 

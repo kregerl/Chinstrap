@@ -37,7 +37,7 @@ add_executable(Chinstrap src/main.cpp
         src/Visit.h
         src/repl/Cli.cpp
         src/repl/Cli.h
-        src/function/Function.h
+        src/function/NativeFunction.h
         src/function/PrintFunction.h
         src/function/PrintFunction.cpp
         src/types/Literal.cpp

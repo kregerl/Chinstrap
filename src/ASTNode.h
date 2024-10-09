@@ -10,11 +10,20 @@
 #define MAKE_VISITABLE void accept(Visitor &visitor) override { visitor.visit(*this); }
 
 namespace Chinstrap {
-    class ASTNode {
+    template<typename T>
+    class VisitedBy {
+    public:
+        virtual ~VisitedBy() = default;
+
+    private:
+        virtual void accept(T &visitor) = 0;
+    };
+
+    class ASTNode : public VisitedBy<Visitor> {
     public:
         virtual ~ASTNode() = default;
 
-        virtual void accept(Visitor &visitor) = 0;
+        void accept(Visitor &visitor) override = 0;
     };
 
     class SingleChildNode : public ASTNode {
