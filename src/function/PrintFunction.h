@@ -6,9 +6,7 @@
 namespace Chinstrap {
     class PrintFunction : public Function {
     public:
-        explicit PrintFunction(const std::unordered_map<std::string, TokenType> parameters);
-
-        virtual Returnable call(const std::unordered_map<std::string, Returnable> parameters) override;
+        static Returnable call(std::vector<Returnable>& parameters);
     };
 }
 

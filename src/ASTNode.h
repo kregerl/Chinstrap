@@ -24,7 +24,8 @@ namespace Chinstrap {
         }
 
     protected:
-        explicit SingleChildNode(std::shared_ptr<ASTNode> child) : m_child(std::move(child)) {}
+        explicit SingleChildNode(std::shared_ptr<ASTNode> child) : m_child(std::move(child)) {
+        }
 
     private:
         std::shared_ptr<ASTNode> m_child;
@@ -33,7 +34,8 @@ namespace Chinstrap {
     template<typename T>
     class ValueNode : public ASTNode {
     public:
-        explicit ValueNode(T value) : m_value(std::move(value)) {}
+        explicit ValueNode(T value) : m_value(std::move(value)) {
+        }
 
         [[nodiscard]] T value() const { return m_value; }
 
@@ -41,20 +43,24 @@ namespace Chinstrap {
         T m_value;
     };
 
-    class BraceNode: public ValueNode<std::vector<std::shared_ptr<ASTNode>>> {
+    class BraceNode : public ValueNode<std::vector<std::shared_ptr<ASTNode> > > {
         MAKE_VISITABLE
 
-    public: 
-        explicit BraceNode(const std::vector<std::shared_ptr<ASTNode>>& value);
+    public:
+        explicit BraceNode(const std::vector<std::shared_ptr<ASTNode> > &value);
     };
 
     class FunctionNode : public ASTNode {
         MAKE_VISITABLE
+
     public:
-        FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>>& value);
+        FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode> > &value);
+
+        [[nodiscard]] std::vector<std::shared_ptr<ASTNode> > &parameters() { return m_parameters; };
+        [[nodiscard]] const std::string &name() const { return m_name; };
 
     private:
-        std::vector<std::shared_ptr<ASTNode>> m_parameters;
+        std::vector<std::shared_ptr<ASTNode> > m_parameters;
         std::string m_name;
     };
 
@@ -83,12 +89,12 @@ namespace Chinstrap {
         MAKE_VISITABLE
 
     public:
-        explicit ListNode(std::vector<std::shared_ptr<ASTNode>> children);
+        explicit ListNode(std::vector<std::shared_ptr<ASTNode> > children);
 
-        [[nodiscard]] const std::vector<std::shared_ptr<ASTNode>> &children() const { return m_children; }
+        [[nodiscard]] const std::vector<std::shared_ptr<ASTNode> > &children() const { return m_children; }
 
     private:
-        std::vector<std::shared_ptr<ASTNode>> m_children;
+        std::vector<std::shared_ptr<ASTNode> > m_children;
     };
 
     class BinaryOperationNode : public ASTNode {

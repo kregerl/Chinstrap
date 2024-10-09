@@ -1,0 +1,36 @@
+#include "Literal.h"
+
+namespace Chinstrap {
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, +);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, -);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, *);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, /);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, %);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, &);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, |);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, <<);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, >>);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(RealLiteral, +);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(RealLiteral, -);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(RealLiteral, *);
+
+    SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(RealLiteral, /);
+
+    NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, RealLiteral, RealLiteral, +);
+
+    NUMERIC_OPERATOR_OVERLOAD_IMPL(IntegerLiteral, RealLiteral, RealLiteral, /);
+
+    NUMERIC_OPERATOR_OVERLOAD_IMPL(RealLiteral, IntegerLiteral, RealLiteral, /);
+
+}

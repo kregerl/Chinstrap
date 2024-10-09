@@ -40,4 +40,6 @@ add_executable(Chinstrap src/main.cpp
         src/function/Function.h
         src/function/PrintFunction.h
         src/function/PrintFunction.cpp
+        src/types/Literal.cpp
+        src/util/StringFormat.h
 )
