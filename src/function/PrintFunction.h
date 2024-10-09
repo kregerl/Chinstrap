@@ -1,12 +1,12 @@
-#ifndef CHINSTRAP_NATIVEFUNCTION_H
-#define CHINSTRAP_NATIVEFUNCTION_H
+#ifndef CHINSTRAP_PRINTFUNCTION_H
+#define CHINSTRAP_PRINTFUNCTION_H
 
-#include "Function.h"
+#include "NativeFunction.h"
 
 namespace Chinstrap {
-    class PrintFunction : public Function {
+    class PrintFunction : public NativeFunction {
     public:
-        static Returnable call(std::vector<Returnable>& parameters);
+        Returnable call(std::vector<Returnable>& parameters) override;
     };
 }
 

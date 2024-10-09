@@ -1,7 +1,11 @@
 #include <iostream>
 #include <utility>
+#include <complex>
+#include <functional>
 #include "Parser.h"
 #include "repl/Cli.h"
+#include "function/SineFunction.h"
+
 
 void interpret(std::shared_ptr<Chinstrap::ASTNode> node) {
     auto variant = Chinstrap::Interpreter::get_value(std::move(node));
@@ -25,7 +29,6 @@ int main() {
     //         std::cout << x.get_value() << std::endl;
     //     }
     // }, var1, var2);
-
     Repl::Cli cli;
     cli.repl();
     //    Chinstrap::Parser p("--12 + 1 - 10");

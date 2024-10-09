@@ -40,6 +40,10 @@ add_executable(Chinstrap src/main.cpp
         src/function/NativeFunction.h
         src/function/PrintFunction.h
         src/function/PrintFunction.cpp
+        src/function/SineFunction.h
+        src/function/SineFunction.cpp
+        src/function/SingleParameterMathFunction.h
+        src/function/SingleParameterMathFunction.cpp
         src/types/Literal.cpp
         src/util/StringFormat.h
 )

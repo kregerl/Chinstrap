@@ -10,7 +10,7 @@
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"
-#include "function/Function.h"
+#include "function/NativeFunction.h"
 #include "Returnable.h"
 
 #define UNORDERED_VISIT(type1, type2, expression) \
@@ -48,7 +48,7 @@ namespace Chinstrap {
 
     struct Scope {
         std::unordered_map<std::string, Returnable> m_variables; 
-        std::unordered_map<std::string, std::shared_ptr<Function>> m_functions;
+        std::unordered_map<std::string, std::shared_ptr<NativeFunction>> m_functions;
 
         Scope(): m_variables({}) {}
     };
