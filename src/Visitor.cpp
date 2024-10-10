@@ -5,8 +5,8 @@
 #include "Visitor.h"
 #include "ASTNode.h"
 #include "Exception.h"
-#include "function/PrintFunction.h"
-#include "function/SingleParameterMathFunction.h"
+#include "native_function/PrintFunction.h"
+#include "native_function/SingleParameterMathFunction.h"
 
 #define RESULT_CASE(x) {result(x); break;}
 

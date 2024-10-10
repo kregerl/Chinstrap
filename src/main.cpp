@@ -1,11 +1,8 @@
 #include <iostream>
 #include <utility>
-#include <complex>
 #include <functional>
 #include "Parser.h"
 #include "repl/Cli.h"
-#include "function/SineFunction.h"
-
 
 void interpret(std::shared_ptr<Chinstrap::ASTNode> node) {
     auto variant = Chinstrap::Interpreter::get_value(std::move(node));

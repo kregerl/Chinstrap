@@ -10,7 +10,7 @@
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"
-#include "function/NativeFunction.h"
+#include "native_function/NativeFunction.h"
 #include "Returnable.h"
 
 #define UNORDERED_VISIT(type1, type2, expression) \
