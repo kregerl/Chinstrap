@@ -7,6 +7,7 @@
 #include "Exception.h"
 #include "native_function/PrintFunction.h"
 #include "native_function/SingleParameterMathFunction.h"
+#include "util/StringFormat.h"
 
 #define RESULT_CASE(x) {result(x); break;}
 
@@ -47,34 +48,18 @@ namespace Chinstrap {
     }
 
     template<typename Visitor, typename Visitable, typename ResultType>
+    void ValueVisitor<Visitor, Visitable, ResultType>::evaluate(Visitable v) {
+        Visitor visitor;
+        if (v == nullptr) {
+            throw EvaluatorException("Error evaluating expression, unexpected null node.");
+        }
+
+        v->accept(visitor);
+    }
+
+    template<typename Visitor, typename Visitable, typename ResultType>
     void ValueVisitor<Visitor, Visitable, ResultType>::result(ResultType result) {
         m_value = result;
-    }
-
-    void Interpreter::visit(FunctionNode &node) {
-        auto function_name = node.name();
-
-        if (s_native_functions.find(function_name) != s_native_functions.end()) {
-            std::vector<Returnable> native_parameters;
-            for (auto &param: node.parameters()) {
-                native_parameters.emplace_back(get_value(param));
-            }
-            result(s_native_functions.at(function_name)->call(native_parameters));
-            return;
-        }
-    }
-
-    void Interpreter::visit(BraceNode &node) {
-        s_scopes.emplace_front();
-        auto expressions = node.value();
-        for (auto &expression: expressions) {
-            auto x = get_value(expression);
-            auto y = x;
-            // Create a stack of scopes to hold vars and functions
-        }
-
-        s_scopes.pop_front();
-        result(Noop());
     }
 
     void Interpreter::visit(IntegerNode &node) {
@@ -261,6 +246,59 @@ namespace Chinstrap {
         scope.m_variables[value] = get_value(node.rhs());
     }
 
+    void Interpreter::visit(BraceNode &node) {
+        s_scopes.emplace_front();
+        auto expressions = node.value();
+        for (auto &expression: expressions) {
+            evaluate(expression);
+        }
+
+        s_scopes.pop_front();
+        result(Noop());
+    }
+
+    void Interpreter::visit(FunctionNode &node) {
+        auto function_name = node.name();
+
+        if (s_native_functions.find(function_name) != s_native_functions.end()) {
+            std::vector<Returnable> native_parameters;
+            for (auto &param: node.parameters()) {
+                native_parameters.emplace_back(get_value(param));
+            }
+            result(s_native_functions.at(function_name)->call(native_parameters));
+            return;
+        }
+        auto &scope = s_scopes.front();
+        const auto &node_name = node.name();
+        if (scope.m_functions.find(node_name) != scope.m_functions.end()) {
+            auto &function = scope.m_functions.at(node_name);
+
+            auto num_defined_parameters = function.parameters().size();
+            auto num_parameters = node.parameters().size();
+
+            if (num_defined_parameters != num_parameters) {
+                throw EvaluatorException(
+                        string_format("Expected %ld parameters but got %ld", num_defined_parameters, num_parameters));
+            }
+
+            Scope function_scope;
+            for (int i = 0; i < num_parameters; i++) {
+                auto value = get_value(node.parameters().at(i));
+                auto identifier = function.parameters().at(i).value;
+                function_scope.m_variables.emplace(identifier, value);
+            }
+            s_scopes.emplace_front(function_scope);
+            result(get_value(function.body()));
+            s_scopes.pop_front();
+        }
+    }
+
+    void Interpreter::visit(FunctionDefinitionNode &node) {
+        auto &scope = s_scopes.front();
+        scope.m_functions.emplace(node.identifier(), Function(node.parameters(), node.body()));
+        result(Noop{});
+    }
+
     void PrettyPrinter::visit(FunctionNode &node) {
     }
 
@@ -292,5 +330,9 @@ namespace Chinstrap {
     }
 
     void PrettyPrinter::visit(AssignmentNode &) {
+    }
+
+    void PrettyPrinter::visit(FunctionDefinitionNode &) {
+
     }
 }

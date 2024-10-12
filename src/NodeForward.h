@@ -1,12 +1,8 @@
-#ifndef CHINSTRAP_NODEFORWARD_H
+#ifndef CHINSTRAP_NODEFORWARD_H;
 #define CHINSTRAP_NODEFORWARD_H
 
 namespace Chinstrap {
     class ASTNode;
-
-    class FunctionNode;
-
-    class BraceNode;
 
     class IntegerNode;
 
@@ -23,6 +19,12 @@ namespace Chinstrap {
     class PostfixOperationNode;
 
     class AssignmentNode;
+
+    class BraceNode;
+
+    class FunctionNode;
+
+    class FunctionDefinitionNode;
 }
 
 

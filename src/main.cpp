@@ -38,8 +38,8 @@ int main() {
     //    Chinstrap::Parser p("x = 10");
     //    auto node = p.parse_expression();
     //
-    // Chinstrap::Parser p("print(1)");
-    // auto node = p.parse_expression();
-    // interpret(node);
+//     Chinstrap::Parser p("def test(x) {x+1}");
+//     auto node = p.parse_expression();
+//     interpret(node);
     //    pretty_print(node);
 }

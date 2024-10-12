@@ -4,10 +4,10 @@
 #include "ASTNode.h"
 
 namespace Chinstrap {
-    FunctionNode::FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>>& parameters) 
-    : m_name(std::move(name)), m_parameters(parameters) {}
+    FunctionNode::FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>> &parameters)
+            : m_name(std::move(name)), m_parameters(parameters) {}
 
-    BraceNode::BraceNode(const std::vector<std::shared_ptr<ASTNode>>& value): ValueNode(value) {}
+    BraceNode::BraceNode(const std::vector<std::shared_ptr<ASTNode>> &value) : ValueNode(value) {}
 
     IntegerNode::IntegerNode(int64_t value) : ValueNode(value) {}
 
@@ -46,5 +46,11 @@ namespace Chinstrap {
 
     AssignmentNode::AssignmentNode(std::string identifier, std::shared_ptr<ASTNode> rhs) :
             m_rhs(std::move(rhs)), m_identifier(std::move(identifier)) {}
+
+    FunctionDefinitionNode::FunctionDefinitionNode(
+            std::string identifier,
+            std::vector<Token> parameters,
+            std::shared_ptr<ASTNode> body)
+            : m_identifier(std::move(identifier)), m_parameters(std::move(parameters)), m_body(std::move(body)) {}
 }
 

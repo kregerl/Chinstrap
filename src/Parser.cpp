@@ -3,12 +3,14 @@
 #include "parslet/PostfixParslet.h"
 #include "parslet/ListParslet.h"
 #include "parslet/BraceParslet.h"
+#include "parslet/FunctionDefinitionParslet.h"
 
 namespace Chinstrap {
 
     Parser::Parser(std::string_view source) : m_lexer(source) {
         m_prefix_parslets = {
                 {TokenType::KW_if,   new PrefixParslet()},
+                {TokenType::KW_def,   new FunctionDefinitionParslet()},
                 {TokenType::Identifier,   new PrefixParslet()},
                 {TokenType::Integer,   new PrefixParslet()},
                 {TokenType::Real,   new PrefixParslet()},

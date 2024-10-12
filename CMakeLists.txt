@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 project(Chinstrap)
 
 set(CMAKE_CXX_STANDARD 17)
+SET(CMAKE_BUILD_TYPE Debug)
 
 add_executable(Chinstrap src/main.cpp
         src/Lexer.cpp
@@ -27,6 +28,8 @@ add_executable(Chinstrap src/main.cpp
         src/parslet/BraceParslet.cpp
         src/parslet/StatementParslet.h
         src/parslet/StatementParslet.cpp
+        src/parslet/FunctionDefinitionParslet.h
+        src/parslet/FunctionDefinitionParslet.cpp
         src/Exception.h
         src/Units.h
         src/parslet/ListParslet.cpp
@@ -37,6 +40,8 @@ add_executable(Chinstrap src/main.cpp
         src/Visit.h
         src/repl/Cli.cpp
         src/repl/Cli.h
+        src/native_function/Function.h
+        src/native_function/Function.cpp
         src/native_function/NativeFunction.h
         src/native_function/PrintFunction.h
         src/native_function/PrintFunction.cpp

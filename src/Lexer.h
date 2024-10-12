@@ -31,6 +31,7 @@ namespace Chinstrap {
         Ampersand,
         Eof,
         KW_if,
+        KW_def,
     };
 
     struct Token {

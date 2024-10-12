@@ -66,6 +66,7 @@ namespace Chinstrap {
         FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode> > &value);
 
         [[nodiscard]] std::vector<std::shared_ptr<ASTNode> > &parameters() { return m_parameters; };
+
         [[nodiscard]] const std::string &name() const { return m_name; };
 
     private:
@@ -208,6 +209,23 @@ namespace Chinstrap {
     private:
         std::string m_identifier;
         std::shared_ptr<ASTNode> m_rhs;
+    };
+
+    class FunctionDefinitionNode : public ASTNode {
+        MAKE_VISITABLE
+
+    public:
+        FunctionDefinitionNode(std::string identifier, std::vector<Token> parameters, std::shared_ptr<ASTNode> body);
+
+        [[nodiscard]] const std::string &identifier() const { return m_identifier; }
+
+        [[nodiscard]] const std::vector<Token> &parameters() const { return m_parameters; }
+
+        [[nodiscard]] std::shared_ptr<ASTNode> body() const { return m_body; }
+    private:
+        std::string m_identifier;
+        std::vector<Token> m_parameters;
+        std::shared_ptr<ASTNode> m_body;
     };
 }
 

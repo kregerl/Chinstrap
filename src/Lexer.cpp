@@ -125,6 +125,8 @@ namespace Chinstrap {
 
         if (string == "if") {
             return Token::create(TokenType::KW_if, string);
+        } else if (string == "def") {
+            return Token::create(TokenType::KW_def, string);
         }
         return Token::create(TokenType::Identifier, ss.str());
     }

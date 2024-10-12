@@ -10,7 +10,7 @@
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"
-#include "native_function/NativeFunction.h"
+#include "native_function/Function.h"
 #include "Returnable.h"
 
 #define UNORDERED_VISIT(type1, type2, expression) \
@@ -20,8 +20,6 @@
 namespace Chinstrap {
     class Visitor {
     public:
-        virtual void visit(BraceNode &) = 0;
-        virtual void visit(FunctionNode &) = 0;
         virtual void visit(IntegerNode &) = 0;
         virtual void visit(RealNode &) = 0;
         virtual void visit(ListNode &) = 0;
@@ -30,6 +28,9 @@ namespace Chinstrap {
         virtual void visit(PrefixOperationNode &) = 0;
         virtual void visit(PostfixOperationNode &) = 0;
         virtual void visit(AssignmentNode &) = 0;
+        virtual void visit(BraceNode &) = 0;
+        virtual void visit(FunctionNode &) = 0;
+        virtual void visit(FunctionDefinitionNode &) = 0;
     };
 
   
@@ -40,6 +41,8 @@ namespace Chinstrap {
 
         static ResultType get_value(Visitable v);
 
+        static void evaluate(Visitable v);
+
         virtual void result(ResultType result);
 
     protected:
@@ -48,7 +51,7 @@ namespace Chinstrap {
 
     struct Scope {
         std::unordered_map<std::string, Returnable> m_variables; 
-        std::unordered_map<std::string, std::shared_ptr<NativeFunction>> m_functions;
+        std::unordered_map<std::string, Function> m_functions;
 
         Scope(): m_variables({}) {}
     };
@@ -56,8 +59,6 @@ namespace Chinstrap {
 
     class Interpreter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
-        void visit(BraceNode &) override;
-        void visit(FunctionNode &) override;
         void visit(IntegerNode &) override;
         void visit(RealNode &) override;
         void visit(ListNode &) override;
@@ -66,12 +67,13 @@ namespace Chinstrap {
         void visit(PrefixOperationNode &) override;
         void visit(PostfixOperationNode &) override;
         void visit(AssignmentNode &) override;
+        void visit(BraceNode &) override;
+        void visit(FunctionNode &) override;
+        void visit(FunctionDefinitionNode &) override;
     };
 
     class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
     public:
-        void visit(BraceNode &) override;
-        void visit(FunctionNode &) override;
         void visit(IntegerNode &) override;
         void visit(RealNode &) override;
         void visit(IdentifierNode &) override;
@@ -80,6 +82,9 @@ namespace Chinstrap {
         void visit(PrefixOperationNode &) override;
         void visit(PostfixOperationNode &) override;
         void visit(AssignmentNode &) override;
+        void visit(BraceNode &) override;
+        void visit(FunctionNode &) override;
+        void visit(FunctionDefinitionNode &) override;
     private:
         int m_indent_amount = 0;
     };
