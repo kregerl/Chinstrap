@@ -7,10 +7,10 @@ namespace Chinstrap {
 
     Returnable SingleParameterMathFunction::call(std::vector<Returnable> &parameters) {
         if (parameters.empty()) {
-            throw std::runtime_error("SineFunction::call: Expected 1 argument, got 0");
+            throw std::runtime_error("SingleParameterMathFunction::call: Expected 1 argument, got 0");
         }
         if (parameters.size() > 1) {
-            throw std::runtime_error(string_format("SineFunction::call: Expected 1 argument, got %ld",
+            throw std::runtime_error(string_format("SingleParameterMathFunction::call: Expected 1 argument, got %ld",
                                                    parameters.size()));
         }
 

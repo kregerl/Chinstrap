@@ -10,7 +10,7 @@
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"
-#include "native_function/Function.h"
+#include "function/Function.h"
 #include "Returnable.h"
 
 #define UNORDERED_VISIT(type1, type2, expression) \
@@ -31,9 +31,10 @@ namespace Chinstrap {
         virtual void visit(BraceNode &) = 0;
         virtual void visit(FunctionNode &) = 0;
         virtual void visit(FunctionDefinitionNode &) = 0;
+        virtual void visit(ReturnNode &) = 0;
     };
 
-  
+
     template<typename Visitor, typename Visitable, typename ResultType>
     class ValueVisitor {
     public:
@@ -50,10 +51,10 @@ namespace Chinstrap {
     };
 
     struct Scope {
-        std::unordered_map<std::string, Returnable> m_variables; 
+        std::unordered_map<std::string, Returnable> m_variables;
         std::unordered_map<std::string, Function> m_functions;
 
-        Scope(): m_variables({}) {}
+        Scope() : m_variables({}) {}
     };
 
 
@@ -70,6 +71,8 @@ namespace Chinstrap {
         void visit(BraceNode &) override;
         void visit(FunctionNode &) override;
         void visit(FunctionDefinitionNode &) override;
+        void visit(ReturnNode &) override;
+
     };
 
     class PrettyPrinter : public Visitor, public ValueVisitor<Interpreter, std::shared_ptr<ASTNode>, Returnable> {
@@ -85,6 +88,7 @@ namespace Chinstrap {
         void visit(BraceNode &) override;
         void visit(FunctionNode &) override;
         void visit(FunctionDefinitionNode &) override;
+        void visit(ReturnNode &) override;
     private:
         int m_indent_amount = 0;
     };

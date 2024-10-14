@@ -23,7 +23,7 @@ namespace Chinstrap {
                         [&os](IntegerLiteral &literal) { os << std::to_string(literal.get_value()); },
                         [&os](RealLiteral &literal) { os << std::to_string(literal.get_value()); },
                         [&os](Collection &collection) { os << collection; },
-                        [&os](auto &a) { os << std::string("Unknown type!"); }
+                        [&os](auto &a) { os << std::string("Unknown m_type!"); }
                 }, element);
                 if (i < c.size() - 1) {
                     os << std::string(", ");

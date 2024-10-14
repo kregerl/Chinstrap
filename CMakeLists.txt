@@ -40,13 +40,13 @@ add_executable(Chinstrap src/main.cpp
         src/Visit.h
         src/repl/Cli.cpp
         src/repl/Cli.h
-        src/native_function/Function.h
-        src/native_function/Function.cpp
-        src/native_function/NativeFunction.h
-        src/native_function/PrintFunction.h
-        src/native_function/PrintFunction.cpp
-        src/native_function/SingleParameterMathFunction.h
-        src/native_function/SingleParameterMathFunction.cpp
+        src/function/Function.h
+        src/function/Function.cpp
+        src/function/NativeFunction.h
+        src/function/PrintFunction.h
+        src/function/PrintFunction.cpp
+        src/function/SingleParameterMathFunction.h
+        src/function/SingleParameterMathFunction.cpp
         src/types/Literal.cpp
         src/util/StringFormat.h
 )

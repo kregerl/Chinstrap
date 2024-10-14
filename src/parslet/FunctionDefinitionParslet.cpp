@@ -5,7 +5,7 @@ namespace Chinstrap {
     FunctionDefinitionParslet::FunctionDefinitionParslet() : PrefixParslet(Precedence::None) {}
 
     std::shared_ptr<ASTNode> FunctionDefinitionParslet::parse(Parser &parser, const Token &token) {
-        switch (token.type) {
+        switch (token.m_type) {
             case TokenType::KW_def: {
                 auto function_name = parser.consume(TokenType::Identifier);
                 (void) parser.consume(TokenType::LParen);
@@ -19,8 +19,11 @@ namespace Chinstrap {
                     } while (parser.matches(TokenType::Comma));
                     (void) parser.consume(TokenType::RParen);
 
+                    parser.push_context(Parser::Context::FunctionBody);
                     std::shared_ptr<ASTNode> body = parser.parse_expression();
-                    return std::make_shared<FunctionDefinitionNode>(function_name.value, parameters, body);
+                    parser.pop_context();
+
+                    return std::make_shared<FunctionDefinitionNode>(function_name.m_value, parameters, body);
                 }
             }
             default:

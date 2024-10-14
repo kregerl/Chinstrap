@@ -25,6 +25,8 @@ namespace Chinstrap {
     class FunctionNode;
 
     class FunctionDefinitionNode;
+
+    class ReturnNode;
 }
 
 

@@ -56,7 +56,12 @@ namespace Chinstrap {
         MAKE_VISITABLE
 
     public:
-        explicit BraceNode(const std::vector<std::shared_ptr<ASTNode> > &value);
+        explicit BraceNode(const std::vector<std::shared_ptr<ASTNode> > &value, bool push_scope = true);
+
+        [[nodiscard]] bool push_scope() const { return m_push_scope; }
+
+    private:
+        bool m_push_scope;
     };
 
     class FunctionNode : public ASTNode {
@@ -173,7 +178,7 @@ namespace Chinstrap {
         PrefixOperationNode(Token token, std::shared_ptr<ASTNode> child);
 
         [[nodiscard]] TokenType type() const {
-            return m_token.type;
+            return m_token.m_type;
         }
 
     private:
@@ -187,7 +192,7 @@ namespace Chinstrap {
         PostfixOperationNode(std::shared_ptr<ASTNode> child, Token token);
 
         [[nodiscard]] TokenType type() const {
-            return m_token.type;
+            return m_token.m_type;
         }
 
         static IntegerLiteral factorial(IntegerLiteral literal);
@@ -222,10 +227,23 @@ namespace Chinstrap {
         [[nodiscard]] const std::vector<Token> &parameters() const { return m_parameters; }
 
         [[nodiscard]] std::shared_ptr<ASTNode> body() const { return m_body; }
+
     private:
         std::string m_identifier;
         std::vector<Token> m_parameters;
         std::shared_ptr<ASTNode> m_body;
+    };
+
+    class ReturnNode : public ASTNode {
+        MAKE_VISITABLE
+
+    public:
+        explicit ReturnNode(std::shared_ptr<ASTNode> child) : m_child(std::move(child)) {}
+
+        [[nodiscard]] std::shared_ptr<ASTNode> child() const { return m_child; }
+
+    private:
+        std::shared_ptr<ASTNode> m_child;
     };
 }
 

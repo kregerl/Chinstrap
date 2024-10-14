@@ -6,7 +6,7 @@ namespace Chinstrap {
 
     std::shared_ptr<ASTNode> StatementParslet::parse(Parser& parser, const Token& token) {
         
-        switch (token.type) {
+        switch (token.m_type) {
             case TokenType::KW_if:
                 break;
             

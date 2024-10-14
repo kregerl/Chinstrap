@@ -7,7 +7,8 @@ namespace Chinstrap {
     FunctionNode::FunctionNode(std::string name, const std::vector<std::shared_ptr<ASTNode>> &parameters)
             : m_name(std::move(name)), m_parameters(parameters) {}
 
-    BraceNode::BraceNode(const std::vector<std::shared_ptr<ASTNode>> &value) : ValueNode(value) {}
+    BraceNode::BraceNode(const std::vector<std::shared_ptr<ASTNode>> &value, bool push_scope)
+            : ValueNode(value), m_push_scope(push_scope) {}
 
     IntegerNode::IntegerNode(int64_t value) : ValueNode(value) {}
 

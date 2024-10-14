@@ -12,6 +12,7 @@ namespace Chinstrap {
         Real,
         Identifier,
         Comma,
+        Semicolon,
         Plus,
         Minus,
         Asterisk,
@@ -32,25 +33,27 @@ namespace Chinstrap {
         Eof,
         KW_if,
         KW_def,
+        KW_return,
     };
 
     struct Token {
-        TokenType type;
-        std::string value;
+        TokenType m_type;
+        std::string m_value;
 
-        static Token create(TokenType type, std::string value) {
-            return Token{.type=type, .value=std::move(value)};
+        size_t m_line_number;
+
+        Token(TokenType type, std::string value, size_t line_number) : m_type(type), m_value(std::move(value)),
+                                                                       m_line_number(line_number) {}
+
+        Token(TokenType type, char value, size_t line_number) : m_type(type), m_line_number(line_number) {
+            m_value = std::string(1, value);
         }
 
-        static Token create(TokenType type, char value) {
-            return Token{.type=type, .value=std::string(1, value)};
-        }
-
-        friend std::ostream& operator<<(std::ostream& os, const Token& token) {
+        friend std::ostream &operator<<(std::ostream &os, const Token &token) {
             std::stringstream ss;
-            ss << "Token Type: " << static_cast<int>(token.type);
+            ss << "Token Type: " << static_cast<int>(token.m_type);
             ss << " ";
-            ss << "Token Value: \"" << token.value << "\"";
+            ss << "Token Value: \"" << token.m_value << "\"";
             os << ss.str();
             return os;
         }
@@ -67,7 +70,7 @@ namespace Chinstrap {
         Token next();
 
     private:
-        static std::string read_source(const std::string&);
+        static std::string read_source(const std::string &);
 
         char advance();
 
@@ -77,12 +80,16 @@ namespace Chinstrap {
 
         void skip_whitespace();
 
+        [[nodiscard]] Token create_token(TokenType type, std::string value) const;
+
+        [[nodiscard]] Token create_token(TokenType type, char value) const;
+
         Token lex_number();
 
         Token lex_identifier();
 
         size_t m_line{1};
-        const char* m_current;
+        const char *m_current;
         std::string m_source;
     };
 }

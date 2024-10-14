@@ -7,20 +7,24 @@ namespace Chinstrap {
     std::shared_ptr<ASTNode> PrefixParslet::parse(Parser& parser, const Token& token) {
         // If precedence is still none after parens, then its assumed its a number
         if (get_precedence() == Precedence::None) {
-            switch (token.type) {
+            switch (token.m_type) {
                 case TokenType::Integer:
-                    return std::make_shared<IntegerNode>(std::stoi(token.value));
+                    return std::make_shared<IntegerNode>(std::stoi(token.m_value));
                 case TokenType::Real:
-                    return std::make_shared<RealNode>(std::stod(token.value));
+                    return std::make_shared<RealNode>(std::stod(token.m_value));
                 case TokenType::Identifier: {
                     if (!parser.matches(TokenType::LParen)) {
-                        return std::make_shared<IdentifierNode>(token.value);
+                        return std::make_shared<IdentifierNode>(token.m_value);
                     }
                     auto parameters = std::vector<std::shared_ptr<ASTNode>>();
                     while (!parser.try_consume(TokenType::RParen).has_value()) {
                         parameters.emplace_back(parser.parse_expression());
                     }
-                    return std::make_shared<FunctionNode>(token.value, parameters);
+                    return std::make_shared<FunctionNode>(token.m_value, parameters);
+                }
+                case TokenType::KW_return:{
+                    auto expression = parser.parse_expression();
+                    return std::make_shared<ReturnNode>(expression);
                 }
                 default: break;
             }

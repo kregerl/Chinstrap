@@ -5,8 +5,8 @@
 #include "Visitor.h"
 #include "ASTNode.h"
 #include "Exception.h"
-#include "native_function/PrintFunction.h"
-#include "native_function/SingleParameterMathFunction.h"
+#include "function/PrintFunction.h"
+#include "function/SingleParameterMathFunction.h"
 #include "util/StringFormat.h"
 
 #define RESULT_CASE(x) {result(x); break;}
@@ -194,7 +194,7 @@ namespace Chinstrap {
                 }, left, right))
             }
             default:
-                throw EvaluatorException("Unimplemented binary operation type.");
+                throw EvaluatorException("Unimplemented binary operation m_type.");
         }
     }
 
@@ -211,7 +211,7 @@ namespace Chinstrap {
                 }, child))
             }
             default:
-                throw EvaluatorException("Unimplemented unary operation type.");
+                throw EvaluatorException("Unimplemented unary operation m_type.");
         }
     }
 
@@ -228,7 +228,7 @@ namespace Chinstrap {
                 }, child))
             }
             default:
-                throw EvaluatorException("Unimplemented unary operation type.");
+                throw EvaluatorException("Unimplemented unary operation m_type.");
         }
     }
 
@@ -247,13 +247,16 @@ namespace Chinstrap {
     }
 
     void Interpreter::visit(BraceNode &node) {
-        s_scopes.emplace_front();
+        if (node.push_scope())
+            s_scopes.emplace_front();
+
         auto expressions = node.value();
         for (auto &expression: expressions) {
             evaluate(expression);
         }
 
-        s_scopes.pop_front();
+        if (node.push_scope())
+            s_scopes.pop_front();
         result(Noop());
     }
 
@@ -284,11 +287,18 @@ namespace Chinstrap {
             Scope function_scope;
             for (int i = 0; i < num_parameters; i++) {
                 auto value = get_value(node.parameters().at(i));
-                auto identifier = function.parameters().at(i).value;
+                auto identifier = function.parameters().at(i).m_value;
                 function_scope.m_variables.emplace(identifier, value);
             }
             s_scopes.emplace_front(function_scope);
-            result(get_value(function.body()));
+
+            Returnable result_value = Noop{};
+            try {
+                result_value = get_value(function.body());
+            } catch (ReturnValueException& return_value) {
+                result_value = return_value.value();
+            }
+            result(result_value);
             s_scopes.pop_front();
         }
     }
@@ -297,6 +307,11 @@ namespace Chinstrap {
         auto &scope = s_scopes.front();
         scope.m_functions.emplace(node.identifier(), Function(node.parameters(), node.body()));
         result(Noop{});
+    }
+
+    void Interpreter::visit(ReturnNode &node) {
+        auto value = get_value(node.child());
+        throw ReturnValueException(value);
     }
 
     void PrettyPrinter::visit(FunctionNode &node) {
@@ -333,6 +348,10 @@ namespace Chinstrap {
     }
 
     void PrettyPrinter::visit(FunctionDefinitionNode &) {
+
+    }
+
+    void PrettyPrinter::visit(ReturnNode &) {
 
     }
 }

@@ -1,6 +1,7 @@
 #include "Lexer.h"
 #include <fstream>
 #include <iostream>
+#include <utility>
 
 namespace Chinstrap {
     Lexer::Lexer(std::string_view source) : m_source(source) {
@@ -22,44 +23,46 @@ namespace Chinstrap {
 
         switch (*m_current) {
             case '=':
-                return Token::create(TokenType::Equals, advance());
+                return create_token(TokenType::Equals, advance());
             case ',':
-                return Token::create(TokenType::Comma, advance());
+                return create_token(TokenType::Comma, advance());
+            case ';':
+                return create_token(TokenType::Semicolon, advance());
             case '+':
-                return Token::create(TokenType::Plus, advance());
+                return create_token(TokenType::Plus, advance());
             case '-':
-                return Token::create(TokenType::Minus, advance());
+                return create_token(TokenType::Minus, advance());
             case '/':
-                return Token::create(TokenType::Slash, advance());
+                return create_token(TokenType::Slash, advance());
             case '%':
-                return Token::create(TokenType::Percent, advance());
+                return create_token(TokenType::Percent, advance());
             case '*':
-                return Token::create(TokenType::Asterisk, advance());
+                return create_token(TokenType::Asterisk, advance());
             case '!':
-                return Token::create(TokenType::Exclamation, advance());
+                return create_token(TokenType::Exclamation, advance());
             case '(':
-                return Token::create(TokenType::LParen, advance());
+                return create_token(TokenType::LParen, advance());
             case ')':
-                return Token::create(TokenType::RParen, advance());
+                return create_token(TokenType::RParen, advance());
             case '[':
-                return Token::create(TokenType::LBracket, advance());
+                return create_token(TokenType::LBracket, advance());
             case ']':
-                return Token::create(TokenType::RBracket, advance());
+                return create_token(TokenType::RBracket, advance());
             case '{':
-                return Token::create(TokenType::LBrace, advance());
+                return create_token(TokenType::LBrace, advance());
             case '}':
-                return Token::create(TokenType::RBrace, advance());
+                return create_token(TokenType::RBrace, advance());
             case '<':
-                return Token::create(TokenType::LessThan, advance());
+                return create_token(TokenType::LessThan, advance());
             case '>':
-                return Token::create(TokenType::GreaterThan, advance());
+                return create_token(TokenType::GreaterThan, advance());
             case '|':
-                return Token::create(TokenType::Pipe, advance());
+                return create_token(TokenType::Pipe, advance());
             case '&':
-                return Token::create(TokenType::Ampersand, advance());
+                return create_token(TokenType::Ampersand, advance());
         }
 
-        return Token::create(TokenType::Eof, "");
+        return create_token(TokenType::Eof, "");
     }
 
     char Lexer::advance() {
@@ -100,6 +103,14 @@ namespace Chinstrap {
         }
     }
 
+    Token Lexer::create_token(TokenType type, std::string value) const {
+        return {type, std::move(value), m_line};
+    }
+
+    Token Lexer::create_token(TokenType type, char value) const {
+        return {type, value, m_line};
+    }
+
     Token Lexer::lex_number() {
         std::stringstream ss;
         uint32_t dot_count = 0;
@@ -109,9 +120,9 @@ namespace Chinstrap {
             ss << advance();
         }
         if (dot_count > 0) {
-            return Token::create(TokenType::Real, ss.str());
+            return create_token(TokenType::Real, ss.str());
         } else {
-            return Token::create(TokenType::Integer, ss.str());
+            return create_token(TokenType::Integer, ss.str());
         }
 
     }
@@ -124,11 +135,13 @@ namespace Chinstrap {
         auto string = ss.str();
 
         if (string == "if") {
-            return Token::create(TokenType::KW_if, string);
+            return create_token(TokenType::KW_if, string);
         } else if (string == "def") {
-            return Token::create(TokenType::KW_def, string);
+            return create_token(TokenType::KW_def, string);
+        } else if (string == "return") {
+            return create_token(TokenType::KW_return, string);
         }
-        return Token::create(TokenType::Identifier, ss.str());
+        return create_token(TokenType::Identifier, ss.str());
     }
 
     std::string Lexer::read_source(const std::string &source_path) {

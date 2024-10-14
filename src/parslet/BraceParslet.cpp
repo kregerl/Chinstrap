@@ -10,6 +10,11 @@ namespace Chinstrap {
         while (!parser.try_consume(TokenType::RBrace).has_value()) {
             expressions.push_back(parser.parse_expression());
         }
+
+
+        if (parser.peek_context() == Parser::Context::FunctionBody) {
+            return std::make_shared<BraceNode>(expressions, false);
+        }
         return std::make_shared<BraceNode>(expressions);
     }
 }
