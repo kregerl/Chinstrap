@@ -13,10 +13,6 @@ namespace Chinstrap {
 
     class Parser {
     public:
-        enum class Context {
-            FunctionBody
-        };
-
         explicit Parser(std::string_view source);
 
         ~Parser();
@@ -30,13 +26,6 @@ namespace Chinstrap {
         std::optional<Token> try_consume(const TokenType &expected);
 
         Token consume();
-
-        void push_context(const Context &context) { m_context_stack.push(context); }
-
-        Context peek_context() { return m_context_stack.top(); }
-
-        void pop_context() { m_context_stack.pop(); }
-
     private:
 
         Token look_ahead(int distance = 0);
@@ -44,7 +33,6 @@ namespace Chinstrap {
         Precedence get_precedence();
 
         Lexer m_lexer;
-        std::stack<Context> m_context_stack;
         std::vector<Token> m_tokens;
         std::unordered_map<TokenType, PrefixParslet *> m_prefix_parslets;
         std::unordered_map<TokenType, InfixParslet *> m_infix_parslets;
