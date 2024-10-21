@@ -14,8 +14,8 @@ namespace Chinstrap {
 
         auto &value = parameters[0];
         const auto string = std::visit(overloaded{
-                [](IntegerLiteral &n) -> std::string { return std::to_string(n.get_value()); },
-                [](RealLiteral &n) -> std::string { return std::to_string(n.get_value()); },
+                [](int64_t &n) -> std::string { return std::to_string(n); },
+                [](double &n) -> std::string { return std::to_string(n); },
                 [](auto &n) -> std::string { return "<Unimplemented>"; }
         }, value);
 

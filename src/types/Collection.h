@@ -12,7 +12,7 @@ namespace Chinstrap {
 
     class Noop {};
 
-    using Returnable = std::variant<Noop, IntegerLiteral, RealLiteral, Collection>;
+    using Returnable = std::variant<Noop, int64_t, double, bool, Collection>;
 
     class Collection : public std::vector<Returnable> {
         friend std::ostream &operator<<(std::ostream &os, const Collection &c) {
@@ -20,8 +20,8 @@ namespace Chinstrap {
             for (int i = 0; i < c.size(); i++) {
                 auto element = c.at(i);
                 std::visit(overloaded{
-                        [&os](IntegerLiteral &literal) { os << std::to_string(literal.get_value()); },
-                        [&os](RealLiteral &literal) { os << std::to_string(literal.get_value()); },
+                        [&os](int64_t &literal) { os << std::to_string(literal); },
+                        [&os](double &literal) { os << std::to_string(literal); },
                         [&os](Collection &collection) { os << collection; },
                         [&os](auto &a) { os << std::string("Unknown m_type!"); }
                 }, element);

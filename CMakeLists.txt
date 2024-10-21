@@ -49,4 +49,5 @@ add_executable(Chinstrap src/main.cpp
         src/function/SingleParameterMathFunction.cpp
         src/types/Literal.cpp
         src/util/StringFormat.h
+        src/types/OperationVisitor.h
 )

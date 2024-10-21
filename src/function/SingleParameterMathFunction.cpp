@@ -1,9 +1,11 @@
 #include "SingleParameterMathFunction.h"
 #include "../util/StringFormat.h"
 #include "../Exception.h"
+#include "../types/OperationVisitor.h"
 
 namespace Chinstrap {
-    SingleParameterMathFunction::SingleParameterMathFunction(const std::function<double(double)> &function) : m_function(function) {}
+    SingleParameterMathFunction::SingleParameterMathFunction(const std::function<double(double)> &function)
+            : m_function(function) {}
 
     Returnable SingleParameterMathFunction::call(std::vector<Returnable> &parameters) {
         if (parameters.empty()) {
@@ -15,11 +17,14 @@ namespace Chinstrap {
         }
 
         auto &value = parameters[0];
-        const auto real_value = std::visit(overloaded{
-                [this](IntegerLiteral &n) -> Returnable { return RealLiteral(m_function(n.get_value())); },
-                [this](RealLiteral &n) -> Returnable { return RealLiteral(m_function(n.get_value())); },
-                [](auto &n) -> Returnable { throw EvaluatorException("Error"); }
-        }, value);
+        const auto real_value = std::visit(NumericUnaryOperationVisitor{
+                [this](auto n) { return m_function(n); }}, value);
+
+//        const auto real_value = std::visit(overloaded{
+//                [this](int64_t &n) -> Returnable { return m_function(n); },
+//                [this](double &n) -> Returnable { return m_function(n); },
+//                [](auto &n) -> Returnable { throw EvaluatorException("Error"); }
+//        }, value);
 
         return real_value;
     };

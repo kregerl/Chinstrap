@@ -24,6 +24,8 @@ namespace Chinstrap {
                 {TokenType::Equals,        new InfixParslet(Precedence::Assignment)},
                 {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
                 {TokenType::Minus,       new InfixParslet(Precedence::Sum)},
+                {TokenType::Ampersand,    new InfixParslet(Precedence::Bitshift)},
+                {TokenType::Pipe,    new InfixParslet(Precedence::Bitshift)},
                 {TokenType::LessThan,    new InfixParslet(Precedence::Bitshift)},
                 {TokenType::GreaterThan, new InfixParslet(Precedence::Bitshift)},
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},

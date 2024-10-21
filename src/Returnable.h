@@ -5,7 +5,7 @@
 #include "types/Collection.h"
 
 namespace Chinstrap {
-    using Returnable = std::variant<Noop, IntegerLiteral, RealLiteral, Collection>;
+    using Returnable = std::variant<Noop, int64_t, double, bool, Collection>;
 }
 
 #endif

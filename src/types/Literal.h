@@ -4,6 +4,7 @@
 #include <utility>
 #include <string>
 #include <sstream>
+#include <limits>
 
 #define SINGLE_NUMERIC_OPERATOR_OVERLOAD_TEMPLATE(literal, op) friend literal operator op(const literal &a, const literal &b);
 #define SINGLE_NUMERIC_OPERATOR_OVERLOAD_IMPL(literal, op) literal operator op(const literal &a, const literal &b) { return literal(a.get_value() op b.get_value()); }

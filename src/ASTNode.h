@@ -156,7 +156,13 @@ namespace Chinstrap {
             And,
             Or,
             ShiftLeft,
-            ShiftRight
+            ShiftRight,
+            GreaterThan,
+            GreaterThanEqual,
+            LessThan,
+            LessThanEqual,
+            EqualTo,
+            NotEqualTo
         };
 
         static std::optional<Type> op_type_from_token_type(const TokenType &type) {
@@ -230,7 +236,7 @@ namespace Chinstrap {
             return m_token.m_type;
         }
 
-        static IntegerLiteral factorial(IntegerLiteral literal);
+        static int64_t factorial(int64_t literal);
 
     private:
         Token m_token;

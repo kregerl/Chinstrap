@@ -7,10 +7,10 @@
 void interpret(std::shared_ptr<Chinstrap::ASTNode> node) {
     auto variant = Chinstrap::Interpreter::get_value(std::move(node));
     std::visit(Chinstrap::overloaded{
-                   [](Chinstrap::Noop) {
-                   },
-                   [](auto &result) { std::cout << result << std::endl; }
-               }, variant);
+            [](Chinstrap::Noop) {
+            },
+            [](auto &result) { std::cout << result << std::endl; }
+    }, variant);
 }
 
 void pretty_print(std::shared_ptr<Chinstrap::ASTNode> node) {
@@ -18,6 +18,10 @@ void pretty_print(std::shared_ptr<Chinstrap::ASTNode> node) {
 }
 
 int main() {
+    auto x = std::is_arithmetic_v<int64_t>;
+    std::cout << x << std::endl;
+    auto y = std::bit_and<>{};
+    std::cout << y(10, 3) << std::endl;
     // std::variant<Chinstrap::IntegerLiteral, Chinstrap::RealLiteral> var1 = Chinstrap::IntegerLiteral(100);
     // std::variant<Chinstrap::IntegerLiteral, Chinstrap::RealLiteral> var2 = Chinstrap::RealLiteral(10.2);
     // std::visit(Chinstrap::overloaded{
@@ -42,3 +46,5 @@ int main() {
 //     interpret(node);
     //    pretty_print(node);
 }
+
+
