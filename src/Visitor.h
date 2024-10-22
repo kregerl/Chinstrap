@@ -6,7 +6,6 @@
 #include <variant>
 #include <string>
 #include <unordered_map>
-#include "types/Literal.h"
 #include "NodeForward.h"
 #include "types/Collection.h"
 #include "Visit.h"

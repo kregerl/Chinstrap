@@ -1,8 +1,9 @@
 #ifndef CHINSTRAP_OPERATIONVISITOR_H
 #define CHINSTRAP_OPERATIONVISITOR_H
 
-#include <type_traits>
+#include <limits>
 #include <stdexcept>
+#include <type_traits>
 #include "../Returnable.h"
 #include "../Exception.h"
 

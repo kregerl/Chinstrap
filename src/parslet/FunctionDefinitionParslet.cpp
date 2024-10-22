@@ -2,7 +2,7 @@
 #include "../Parser.h"
 #include "../util/StringFormat.h"
 
-static uint32_t MAX_PARAMETERS = 255;
+static constexpr uint32_t MAX_PARAMETERS = 255;
 namespace Chinstrap {
 
     FunctionDefinitionParslet::FunctionDefinitionParslet() : PrefixParslet(Precedence::None) {}

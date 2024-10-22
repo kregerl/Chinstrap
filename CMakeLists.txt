@@ -34,7 +34,6 @@ add_executable(Chinstrap src/main.cpp
         src/Units.h
         src/parslet/ListParslet.cpp
         src/parslet/ListParslet.h
-        src/types/Literal.h
         src/NodeForward.h
         src/types/Collection.h
         src/Visit.h
@@ -47,7 +46,6 @@ add_executable(Chinstrap src/main.cpp
         src/function/PrintFunction.cpp
         src/function/SingleParameterMathFunction.h
         src/function/SingleParameterMathFunction.cpp
-        src/types/Literal.cpp
         src/util/StringFormat.h
         src/types/OperationVisitor.h
 )

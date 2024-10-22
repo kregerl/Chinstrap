@@ -1,9 +1,9 @@
 #ifndef CHINSTRAP_COLLECTION_H
 #define CHINSTRAP_COLLECTION_H
 
+#include <iostream>
 #include <variant>
 #include <vector>
-#include "Literal.h"
 #include "../Visit.h"
 
 namespace Chinstrap {
