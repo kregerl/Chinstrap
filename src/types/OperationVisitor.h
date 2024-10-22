@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include "../Returnable.h"
+#include "../Exception.h"
 
 #define BINARY_FALLBACK_OPERATOR template<typename T, typename U> \
 auto operator()(const T&, const U&) const -> Chinstrap::Returnable { \

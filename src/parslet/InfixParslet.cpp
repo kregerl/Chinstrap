@@ -18,7 +18,6 @@ namespace Chinstrap {
             }
         }
 
-//        FIXME: Allow not-equals operation to be handled correctly. factorials probably need to become infix
         if (token.m_type == TokenType::Exclamation && parser.matches(TokenType::Equals)) {
             type = BinaryOperationNode::Type::NotEqualTo;
         } else if (token.m_type == TokenType::Exclamation) {
