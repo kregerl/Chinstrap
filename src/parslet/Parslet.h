@@ -9,6 +9,8 @@ namespace Chinstrap {
 
     class Parslet {
     public:
+        virtual ~Parslet() = default;
+
         explicit Parslet(Precedence precedence);
 
         Precedence get_precedence();

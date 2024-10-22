@@ -120,7 +120,6 @@ namespace Chinstrap {
         } else {
             return create_token(TokenType::Integer, ss.str());
         }
-
     }
 
     Token Lexer::lex_identifier() {
@@ -128,15 +127,11 @@ namespace Chinstrap {
         while (!is_end() && std::isalnum(*m_current))
             ss << advance();
 
-        auto string = ss.str();
-
-        if (string == "if") {
-            return create_token(TokenType::KW_if, string);
-        } else if (string == "def") {
-            return create_token(TokenType::KW_def, string);
-        } else if (string == "return") {
-            return create_token(TokenType::KW_return, string);
+        if (const auto string = ss.str(); s_token_type_mapping.find(string) != s_token_type_mapping.end()) {
+            return create_token(s_token_type_mapping.at(string), string);
         }
+
+
         return create_token(TokenType::Identifier, ss.str());
     }
 

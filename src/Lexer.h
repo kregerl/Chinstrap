@@ -2,8 +2,8 @@
 #define CHINSTRAP_LEXER_H
 
 #include <string>
-#include <optional>
 #include <sstream>
+#include <unordered_map>
 
 namespace Chinstrap {
     enum class TokenType {
@@ -32,8 +32,16 @@ namespace Chinstrap {
         Ampersand,
         Eof,
         KW_if,
+        KW_let,
         KW_def,
         KW_return,
+    };
+
+    static std::unordered_map<std::string, TokenType> s_token_type_mapping = {
+        {"if", TokenType::KW_if},
+        {"let", TokenType::KW_let},
+        {"def", TokenType::KW_def},
+        {"return", TokenType::KW_return}
     };
 
     struct Token {

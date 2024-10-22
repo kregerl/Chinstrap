@@ -1,4 +1,6 @@
 #include "Parser.h"
+
+#include "parslet/AssignmentParslet.h"
 #include "parslet/GroupParslet.h"
 #include "parslet/PostfixParslet.h"
 #include "parslet/ListParslet.h"
@@ -9,6 +11,7 @@ namespace Chinstrap {
 
     Parser::Parser(std::string_view source) : m_lexer(source) {
         m_prefix_parslets = {
+                {TokenType::KW_let,        new AssignmentParslet()},
                 {TokenType::KW_return,   new PrefixParslet()},
                 {TokenType::KW_if,   new PrefixParslet()},
                 {TokenType::KW_def,   new FunctionDefinitionParslet()},
@@ -21,7 +24,7 @@ namespace Chinstrap {
                 {TokenType::LBrace, new BraceParslet()}
         };
         m_infix_parslets = {
-                {TokenType::Equals,        new InfixParslet(Precedence::Assignment)},
+                // {TokenType::Equals,        new InfixParslet(Precedence::Assignment)},
                 {TokenType::Plus,        new InfixParslet(Precedence::Sum)},
                 {TokenType::Minus,       new InfixParslet(Precedence::Sum)},
                 {TokenType::Ampersand,    new InfixParslet(Precedence::Bitshift)},
