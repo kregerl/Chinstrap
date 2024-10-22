@@ -20,6 +20,6 @@ namespace Chinstrap {
         }, value);
 
         std::cout << string << std::endl;
-        return Noop{};
+        return {};
     }
 }

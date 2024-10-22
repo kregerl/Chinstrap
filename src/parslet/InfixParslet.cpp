@@ -5,25 +5,25 @@ namespace Chinstrap {
     InfixParslet::InfixParslet(Precedence precedence) : Parslet(precedence) {}
 
     std::shared_ptr<ASTNode>
-    InfixParslet::parse(Parser& parser, const Token& token, std::shared_ptr<ASTNode> lhs) {
+    InfixParslet::parse(Parser &parser, const Token &token, std::shared_ptr<ASTNode> lhs) {
         std::optional<BinaryOperationNode::Type> type = BinaryOperationNode::op_type_from_token_type(token.m_type);
 
-        if (token.m_type == TokenType::Equals) {
-            if (parser.matches(TokenType::Equals)) {
-                type = BinaryOperationNode::Type::EqualTo;
-            } else {
-                auto identifier_node = std::dynamic_pointer_cast<IdentifierNode>(lhs);
-                if (identifier_node != nullptr) {
-                    auto identifier = identifier_node->value();
-                    return std::make_shared<AssignmentNode>(identifier, parser.parse_expression(get_precedence()));
-                }
+        if (token.m_type == TokenType::Equals && parser.matches(TokenType::Equals)) {
+            type = BinaryOperationNode::Type::EqualTo;
+        } else if (token.m_type == TokenType::Equals) {
+            auto identifier_node = std::dynamic_pointer_cast<IdentifierNode>(lhs);
+            if (identifier_node != nullptr) {
+                auto identifier = identifier_node->value();
+                return std::make_shared<AssignmentNode>(identifier, parser.parse_expression(get_precedence()));
             }
         }
 
 //        FIXME: Allow not-equals operation to be handled correctly. factorials probably need to become infix
-//        if (token.m_type == TokenType::Exclamation && parser.matches(TokenType::Equals)) {
-//            type = BinaryOperationNode::Type::NotEqualTo;
-//        }
+        if (token.m_type == TokenType::Exclamation && parser.matches(TokenType::Equals)) {
+            type = BinaryOperationNode::Type::NotEqualTo;
+        } else if (token.m_type == TokenType::Exclamation) {
+            return std::make_shared<PostfixOperationNode>(lhs, token);
+        }
 
         if (token.m_type == TokenType::GreaterThan) {
             if (parser.matches(TokenType::GreaterThan))
@@ -47,7 +47,7 @@ namespace Chinstrap {
         auto rhs = parser.parse_expression(get_precedence());
 
         if (!type.has_value()) {
-            throw std::runtime_error("Invalid token m_type for binary operation node");
+            throw std::runtime_error("Invalid token type for binary operation node");
         }
         return std::make_shared<BinaryOperationNode>(type.value(), std::move(lhs), rhs);
     }

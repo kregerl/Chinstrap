@@ -1,4 +1,4 @@
-#ifndef CHINSTRAP_NODEFORWARD_H;
+#ifndef CHINSTRAP_NODEFORWARD_H
 #define CHINSTRAP_NODEFORWARD_H
 
 namespace Chinstrap {

@@ -33,18 +33,6 @@ namespace Chinstrap {
     PostfixOperationNode::PostfixOperationNode(std::shared_ptr<ASTNode> child, Token token)
             : SingleChildNode(std::move(child)), m_token(std::move(token)) {}
 
-    int64_t PostfixOperationNode::factorial(int64_t literal) {
-        int64_t n = literal;
-        int64_t factorial = 1;
-        if (n < 0) {
-            throw std::runtime_error("Cannot take the factorial of a negative number.");
-        }
-        for (int i = 1; i <= n; i++) {
-            factorial *= i;
-        }
-        return int64_t(factorial);
-    }
-
     AssignmentNode::AssignmentNode(std::string identifier, std::shared_ptr<ASTNode> rhs) :
             m_rhs(std::move(rhs)), m_identifier(std::move(identifier)) {}
 

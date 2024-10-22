@@ -17,7 +17,7 @@ namespace Chinstrap {
                         return std::make_shared<IdentifierNode>(token.m_value);
                     }
                     auto parameters = std::vector<std::shared_ptr<ASTNode>>();
-                    while (!parser.try_consume(TokenType::RParen).has_value()) {
+                    while (!parser.matches(TokenType::RParen)) {
                         parameters.emplace_back(parser.parse_expression());
                     }
                     return std::make_shared<FunctionNode>(token.m_value, parameters);

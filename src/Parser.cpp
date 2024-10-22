@@ -31,7 +31,7 @@ namespace Chinstrap {
                 {TokenType::Asterisk,    new InfixParslet(Precedence::Product)},
                 {TokenType::Slash,       new InfixParslet(Precedence::Product)},
                 {TokenType::Percent,       new InfixParslet(Precedence::Product)},
-                {TokenType::Exclamation, new PostfixParslet(Precedence::Postfix)},
+                {TokenType::Exclamation, new InfixParslet(Precedence::Postfix)},
         };
     }
 
@@ -119,14 +119,6 @@ namespace Chinstrap {
         m_tokens.pop_back();
         return token;
     }
-
-    std::optional<Token> Parser::try_consume(const TokenType &expected) {
-        Token token = look_ahead();
-        if (token.m_type != expected)
-            return {};
-        return consume();
-    }
-
 }
 
 

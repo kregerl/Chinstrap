@@ -1,6 +1,5 @@
 #include "SingleParameterMathFunction.h"
 #include "../util/StringFormat.h"
-#include "../Exception.h"
 #include "../types/OperationVisitor.h"
 
 namespace Chinstrap {
@@ -19,12 +18,6 @@ namespace Chinstrap {
         auto &value = parameters[0];
         const auto real_value = std::visit(NumericUnaryOperationVisitor{
                 [this](auto n) { return m_function(n); }}, value);
-
-//        const auto real_value = std::visit(overloaded{
-//                [this](int64_t &n) -> Returnable { return m_function(n); },
-//                [this](double &n) -> Returnable { return m_function(n); },
-//                [](auto &n) -> Returnable { throw EvaluatorException("Error"); }
-//        }, value);
 
         return real_value;
     };

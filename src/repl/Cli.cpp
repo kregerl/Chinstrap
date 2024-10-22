@@ -99,7 +99,7 @@ namespace Repl {
                auto node = parser.parse_expression();
                auto variant = Chinstrap::Interpreter::get_value(node);
                std::visit(Chinstrap::overloaded{
-                       [](Chinstrap::Noop &) {},
+                       [](std::monostate &) {},
                        [](auto &result) { std::cout << result << std::endl; }
                }, variant);
            }

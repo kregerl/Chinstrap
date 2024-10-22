@@ -197,7 +197,7 @@ namespace Chinstrap {
 
         if (node.push_scope())
             s_scopes.pop_front();
-        result(Noop());
+        result(std::monostate{});
     }
 
     void Interpreter::visit(FunctionNode &node) {
@@ -232,7 +232,7 @@ namespace Chinstrap {
             }
             s_scopes.emplace_front(function_scope);
 
-            Returnable result_value = Noop{};
+            Returnable result_value = std::monostate{};
             try {
                 result_value = get_value(function.body());
             } catch (ReturnValueException &return_value) {
@@ -246,7 +246,7 @@ namespace Chinstrap {
     void Interpreter::visit(FunctionDefinitionNode &node) {
         auto &scope = s_scopes.front();
         scope.m_functions.emplace(node.identifier(), Function(node.parameters(), node.body()));
-        result(Noop{});
+        result(std::monostate{});
     }
 
     void Interpreter::visit(ReturnNode &node) {

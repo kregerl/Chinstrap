@@ -76,8 +76,6 @@ namespace Chinstrap {
 
         char peek();
 
-        bool match(char c);
-
         void skip_whitespace();
 
         [[nodiscard]] Token create_token(TokenType type, std::string value) const;

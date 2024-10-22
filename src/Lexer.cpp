@@ -73,10 +73,6 @@ namespace Chinstrap {
         return *(m_current + 1);
     }
 
-    bool Lexer::match(char c) {
-        return peek() == c;
-    }
-
     void Lexer::skip_whitespace() {
         while (true) {
             switch (*m_current) {

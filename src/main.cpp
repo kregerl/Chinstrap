@@ -7,8 +7,7 @@
 void interpret(std::shared_ptr<Chinstrap::ASTNode> node) {
     auto variant = Chinstrap::Interpreter::get_value(std::move(node));
     std::visit(Chinstrap::overloaded{
-            [](Chinstrap::Noop) {
-            },
+            [](std::monostate) {},
             [](auto &result) { std::cout << result << std::endl; }
     }, variant);
 }

@@ -236,8 +236,6 @@ namespace Chinstrap {
             return m_token.m_type;
         }
 
-        static int64_t factorial(int64_t literal);
-
     private:
         Token m_token;
     };

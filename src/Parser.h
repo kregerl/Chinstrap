@@ -23,8 +23,6 @@ namespace Chinstrap {
 
         Token consume(const TokenType &expected);
 
-        std::optional<Token> try_consume(const TokenType &expected);
-
         Token consume();
     private:
 

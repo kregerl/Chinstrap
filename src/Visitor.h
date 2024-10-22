@@ -13,10 +13,6 @@
 #include "function/Function.h"
 #include "Returnable.h"
 
-#define UNORDERED_VISIT(type1, type2, expression) \
-                        [](type1 &lhs, type2 &rhs) -> Returnable { return expression; },\
-                        [](type2 &lhs, type1 &rhs) -> Returnable { return expression; },
-
 namespace Chinstrap {
     class Visitor {
     public:
