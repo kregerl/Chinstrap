@@ -17,18 +17,6 @@ void pretty_print(std::shared_ptr<Chinstrap::ASTNode> node) {
 }
 
 int main() {
-    auto x = std::is_arithmetic_v<int64_t>;
-    std::cout << x << std::endl;
-    auto y = std::bit_and<>{};
-    std::cout << y(10, 3) << std::endl;
-    // std::variant<Chinstrap::IntegerLiteral, Chinstrap::RealLiteral> var1 = Chinstrap::IntegerLiteral(100);
-    // std::variant<Chinstrap::IntegerLiteral, Chinstrap::RealLiteral> var2 = Chinstrap::RealLiteral(10.2);
-    // std::visit(Chinstrap::overloaded{
-    //     [](Chinstrap::Literal &lhs, Chinstrap::Literal &rhs) {
-    //         auto x = lhs / rhs;
-    //         std::cout << x.get_value() << std::endl;
-    //     }
-    // }, var1, var2);
     Repl::Cli cli;
     cli.repl();
     //    Chinstrap::Parser p("--12 + 1 - 10");

@@ -33,6 +33,8 @@ namespace Chinstrap {
 
     template<typename Operation>
     struct NumericBinaryOperationVisitor : public OperationVisitor<Operation> {
+        BINARY_FALLBACK_OPERATOR
+
         explicit NumericBinaryOperationVisitor(Operation op) : OperationVisitor<Operation>(std::move(op)) {}
 
         template<typename T, typename U>
@@ -41,12 +43,12 @@ namespace Chinstrap {
             using ResultType = typename Promote<T, U>::Type;
             return this->m_op(static_cast<ResultType>(a), static_cast<ResultType>(b));
         }
-
-        BINARY_FALLBACK_OPERATOR
     };
 
     template<typename Operation>
     struct NumericUnaryOperationVisitor : public OperationVisitor<Operation> {
+        UNARY_FALLBACK_OPERATOR
+
         explicit NumericUnaryOperationVisitor(Operation op) : OperationVisitor<Operation>(std::move(op)) {}
 
         template<typename T>
@@ -54,12 +56,12 @@ namespace Chinstrap {
         -> std::enable_if_t<std::is_arithmetic_v<T>, Chinstrap::Returnable> {
             return this->m_op(a);
         }
-
-        UNARY_FALLBACK_OPERATOR
     };
 
     template<typename Operation>
     struct IntegerBinaryOperationVisitor : public OperationVisitor<Operation> {
+        BINARY_FALLBACK_OPERATOR
+
         explicit IntegerBinaryOperationVisitor(Operation op) : OperationVisitor<Operation>(std::move(op)) {}
 
         template<typename T, typename U>
@@ -69,12 +71,12 @@ namespace Chinstrap {
             using ResultType = typename Promote<T, U>::Type;
             return this->m_op(static_cast<ResultType>(a), static_cast<ResultType>(b));
         }
-
-        BINARY_FALLBACK_OPERATOR
     };
 
     template<typename Operation>
     struct IntegerUnaryOperationVisitor : public OperationVisitor<Operation> {
+        UNARY_FALLBACK_OPERATOR
+
         explicit IntegerUnaryOperationVisitor(Operation op) : OperationVisitor<Operation>(std::move(op)) {}
 
         template<typename T>
@@ -82,21 +84,6 @@ namespace Chinstrap {
         -> std::enable_if_t<std::numeric_limits<T>::is_integer, Chinstrap::Returnable> {
             return this->m_op(a);
         }
-
-        UNARY_FALLBACK_OPERATOR
-    };
-
-    struct DivisionVisitor {
-        template<typename T, typename U>
-        auto operator()(T &a, U &b) const
-        -> std::enable_if_t<std::is_arithmetic_v<T> && std::is_arithmetic_v<U>, Chinstrap::Returnable> {
-            using ResultType = typename Promote<T, U>::Type;
-            if (b == 0)
-                throw EvaluatorException("Division by 0");
-            return static_cast<ResultType>(a) / static_cast<ResultType>(b);
-        }
-
-        BINARY_FALLBACK_OPERATOR
     };
 
     namespace Operation {
@@ -113,7 +100,7 @@ namespace Chinstrap {
             }
             return factorial;
         }
-    };
+    }
 }
 
 #endif //CHINSTRAP_OPERATIONVISITOR_H

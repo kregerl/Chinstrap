@@ -10,9 +10,9 @@ namespace Chinstrap {
     std::shared_ptr<ASTNode> FunctionDefinitionParslet::parse(Parser &parser, const Token &token) {
         auto function_name = parser.consume(TokenType::Identifier);
         (void) parser.consume(TokenType::LParen);
-        // Non-empty function parameters
         std::vector<Token> parameters = {};
         if (!parser.matches(TokenType::RParen)) {
+            // Non-empty function parameters
             do {
                 if (parameters.size() >= MAX_PARAMETERS)
                     throw std::runtime_error(

@@ -101,7 +101,12 @@ namespace Chinstrap {
                 RESULT_CASE(std::visit(NumericBinaryOperationVisitor{std::multiplies<>{}}, left, right))
             }
             case BinaryOperationNode::Type::Division: {
-                RESULT_CASE(std::visit(DivisionVisitor{}, left, right))
+                auto divide = [](auto lhs, auto rhs) {
+                    if (rhs == 0)
+                        throw EvaluatorException("Division by 0");
+                    return lhs / rhs;
+                };
+                RESULT_CASE(std::visit(NumericBinaryOperationVisitor{divide}, left, right))
             }
             case BinaryOperationNode::Type::ShiftLeft: {
                 RESULT_CASE(std::visit(IntegerBinaryOperationVisitor{
@@ -165,7 +170,8 @@ namespace Chinstrap {
         switch (node.type()) {
             case TokenType::Exclamation: {
                 RESULT_CASE(
-                        std::visit(IntegerUnaryOperationVisitor{[](auto value) { return Operation::factorial(value); }}, child))
+                        std::visit(IntegerUnaryOperationVisitor{[](auto value) { return Operation::factorial(value); }},
+                                   child))
             }
             default:
                 throw EvaluatorException("Unimplemented unary operation m_type.");
